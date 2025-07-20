@@ -94,6 +94,7 @@ public class CharacterMovement : MonoBehaviour
             // _animator.MatchTarget(_trGroundCheck.position, _trGroundCheck.rotation, AvatarTarget.LeftFoot, new MatchTargetWeightMask(Vector3.one, 1f), 0.1f, 0.0f);
         }
 
+        // Climb Object
         if (mJumping)
         {
             Collider[] pushPullColliders = Physics.OverlapSphere(_trPushPullOrigin.position, _pushPullRange, _pushPullLayer);
