@@ -8,6 +8,9 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 Velocity => mRigidbody.velocity;
     public bool Jumping => mbJumping;
     public Vector3 Position => transform.position;
+    public EDirection Direction => mDirection;
+
+    public enum EDirection { Left, Right };
 
     [Header("Move")]
     [SerializeField] private float _moveSpeed = 5f;
@@ -24,7 +27,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerAnimator _animator;
 
     private Rigidbody mRigidbody;
-    private Vector3 mDirection = Vector3.right;
+    // private Vector3 mDirection = Vector3.right;
+    private EDirection mDirection = EDirection.Right;
     private bool mbJumping = false;
     private bool mbIsGrounded = false;
     private float mGroundCheckDisableTimer = 0f;
@@ -32,6 +36,8 @@ public class PlayerMovement : MonoBehaviour
     public void Initialize()
     {
         mRigidbody = GetComponent<Rigidbody>();
+
+        RotateTowards(mDirection, lerp : false);
     }
 
     public void Move(Vector2 moveInput)
@@ -40,15 +46,22 @@ public class PlayerMovement : MonoBehaviour
         velocity.x = moveInput.x * _moveSpeed;
         mRigidbody.velocity = velocity;
 
-        _animator.SetHorizontal(moveInput.x);
 
         if (moveInput.x > .001f || moveInput.x < -.001f)
         {
             // Rotate
-            mDirection = moveInput.x > 0f ? Vector3.right : Vector3.left;
+            EDirection targetDirection = moveInput.x > 0f ? EDirection.Right : EDirection.Left;
 
-            rotateTowards(mDirection, _rotateSpeed);
+            if (targetDirection != mDirection)
+                _animator.Turning(true);
+            else
+                _animator.SetHorizontal(moveInput.x);
+                // _animator.ChangeDirection();
+
+            mDirection = targetDirection;
         }
+
+        RotateTowards(mDirection, true);
     }
 
     public void PushPull(Vector2 moveInput, float speed)
@@ -114,21 +127,66 @@ public class PlayerMovement : MonoBehaviour
         checkGround();
     }
 
-    private void rotateTowards(Vector3 targetDirection, float rotateSpeed)
+    public void RotateTowards(EDirection targetDirection, bool lerp)
     {
         // Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
         Quaternion targetRotation = Quaternion.identity;
 
-        if (targetDirection == Vector3.right)
+        if (targetDirection == EDirection.Right)
         {
             targetRotation = Quaternion.Euler(0f, 90f, 0f);
         }
-        else if (targetDirection == Vector3.left)
+        else if (targetDirection == EDirection.Left)
         {
             targetRotation = Quaternion.Euler(0f, -90f, 0f);
         }
 
-        mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed));
+        if (lerp)
+        {
+            mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed));
+        }
+        else
+        {
+            mRigidbody.MoveRotation(targetRotation);
+            mDirection = targetDirection;
+        }
+    }
+    
+    public void RotateTowards(EDirection targetDirection)
+    {
+        // Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+        Quaternion targetRotation = Quaternion.identity;
+
+        if (targetDirection == EDirection.Right)
+        {
+            targetRotation = Quaternion.Euler(0f, -270f, 0f);
+        }
+        else if (targetDirection == EDirection.Left)
+        {
+            targetRotation = Quaternion.Euler(0f, -90f, 0f);
+        }
+
+
+        float angle = Vector3.SignedAngle(transform.rotation * Vector3.forward, targetRotation * Vector3.forward, Vector3.up);
+
+        Debug.Log(angle);
+        if (angle > 0f)
+            return;
+
+        if (angle < 0f)
+            angle += 360f;
+
+
+        float rotationStep = Mathf.Min(angle, Time.deltaTime * _rotateSpeed);
+
+        Quaternion deltaRotation = Quaternion.AngleAxis(-rotationStep, Vector3.up);
+        mRigidbody.MoveRotation(mRigidbody.rotation * deltaRotation);
+        // mDirection = targetDirection;
+    }
+
+    public void ChangeDirection(EDirection direction)
+    {
+        mDirection = direction;
     }
 
     private void checkGround()

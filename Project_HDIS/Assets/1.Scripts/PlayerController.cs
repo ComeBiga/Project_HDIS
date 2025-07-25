@@ -5,6 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInputHandler), typeof(PlayerMovement))]
 public class PlayerController : MonoBehaviour
 {
+    public PlayerMovement Movement => mMovement;
+    public PlayerInputHandler InputHandler => mInputHandler;
+    public PlayerStateMachine StateMachine => mStateMachine;
+    public PlayerAnimator Animator => _animator;
+
     [SerializeField] PlayerAnimator _animator;
 
     [Header("PushPull")]
@@ -14,6 +19,7 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInputHandler mInputHandler;
     private PlayerMovement mMovement;
+    private PlayerStateMachine mStateMachine;
 
     private bool mbPushPull = false;
     private PushPullObject mPushPullObject;
@@ -24,44 +30,48 @@ public class PlayerController : MonoBehaviour
         mInputHandler = GetComponent<PlayerInputHandler>();
         mMovement = GetComponent<PlayerMovement>();
         mMovement.Initialize();
+
+        mStateMachine = GetComponent<PlayerStateMachine>();
+        mStateMachine.SwitchState(mStateMachine.MoveState);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (mInputHandler.IsInteracting && checkPushPullObject(out mPushPullObject))
-        {
-            mMovement.PushPull(mInputHandler.MoveInput, mPushPullObject.PushPullSpeed);
+        mStateMachine.CurrentState.Tick();
+        //if (mInputHandler.IsInteracting && checkPushPullObject(out mPushPullObject))
+        //{
+        //    mMovement.PushPull(mInputHandler.MoveInput, mPushPullObject.PushPullSpeed);
 
-            mPushPullObject.PushPull(mMovement.Velocity);
+        //    mPushPullObject.PushPull(mMovement.Velocity);
 
-            _animator.SetPushPull(true);
-        }
-        else
-        {
-            mMovement.Move(mInputHandler.MoveInput);
+        //    _animator.SetPushPull(true);
+        //}
+        //else
+        //{
+        //    mMovement.Move(mInputHandler.MoveInput);
 
-            if (mInputHandler.JumpPressed)
-            {
-                mMovement.Jump();
-                mInputHandler.ResetJump();
-            }
+        //    if (mInputHandler.JumpPressed)
+        //    {
+        //        mMovement.Jump();
+        //        mInputHandler.ResetJump();
+        //    }
 
-            if(mMovement.Jumping && checkClimbObject(out Collider collider))
-            {
-                Bounds bounds = collider.bounds;
+        //    if(mMovement.Jumping && checkClimbObject(out Collider collider))
+        //    {
+        //        Bounds bounds = collider.bounds;
 
-                mMovement.Climb(bounds);
-            }
+        //        mMovement.Climb(bounds);
+        //    }
 
-            if(mInputHandler.DownPressed)
-            {
-                mMovement.ClimbDown();
-                mInputHandler.ResetDown();
-            }
+        //    if(mInputHandler.DownPressed)
+        //    {
+        //        mMovement.ClimbDown();
+        //        mInputHandler.ResetDown();
+        //    }
 
-            _animator.SetPushPull(false);
-        }
+        //    _animator.SetPushPull(false);
+        //}
 
         mMovement.Tick();
     }
