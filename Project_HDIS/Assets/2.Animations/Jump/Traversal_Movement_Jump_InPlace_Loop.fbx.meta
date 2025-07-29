@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 121823cfff911a346b9d6c7118a30037
+guid: b04a6ae201630ed4ebe5edc8bfcac27d
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: 1827226128182048838
-    second: Traversal_Movement_Jump_InPlace_Jump
+    second: Traversal_Movement_Jump_InPlace_Loop
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -17,18 +17,16 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
-    rigImportWarnings: 
+    rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
+      copied configuration does not match position in animation file:\n\t'ball_l'
+      : position error = 3.698519 mm\n\t'ball_r' : position error = 3.707902 mm\n"
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
       might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'calf_l' has translation animation that
-      will be discarded.\n\t'foot_l' has translation animation that will be discarded.\n\t'ball_l'
-      has translation animation that will be discarded.\n\t'foot_r' has translation
-      animation that will be discarded.\n\t'ball_r' has translation animation that
-      will be discarded.\n"
+      to improve retargeting quality.\n\t'spine_01' has translation animation that
+      will be discarded.\n\t'ball_l' has translation animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -42,11 +40,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Traversal_Movement_Jump_InPlace_Jump
+      name: Traversal_Movement_Jump_InPlace_Loop
       takeName: Take 001
       internalID: 0
-      firstFrame: 12
-      lastFrame: 20
+      firstFrame: 0
+      lastFrame: 40
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -78,12 +76,10 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
-    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
-    nodeNameCollisionStrategy: 0
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -95,7 +91,6 @@ ModelImporter:
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
-    optimizeBones: 1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -106,7 +101,6 @@ ModelImporter:
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -889,15 +883,12 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 232c5f166caf4c347a0862a91c9dfa56,
-    type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 232c5f166caf4c347a0862a91c9dfa56, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
   avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
-  importBlendShapeDeformPercent: 0
-  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

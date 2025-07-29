@@ -886,6 +886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e13b48b3023c614991d895ec629d13e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
 --- !u!114 &989947695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -945,7 +946,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 5
   _rotateSpeed: 10
-  _jumpForce: 5
+  _jumpForce: 4
   _trGroundCheck: {fileID: 989947702}
   _groundCheckRadius: 0.1
   _groundCheckDisableDuration: 0.2
@@ -1753,6 +1754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e13b48b3023c614991d895ec629d13e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
 --- !u!114 &1660668834
 MonoBehaviour:
   m_ObjectHideFlags: 0

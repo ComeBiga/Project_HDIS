@@ -124,12 +124,12 @@ public class PlayerAnimator : MonoBehaviour
 
     private void OnAnimatorMove()
     {
-        // Debug.Log("OnAnimatorMove" + transform.rotation.eulerAngles);
         if (mAnimator.applyRootMotion && enableRootMotion)
         {
-            // transform.parent.position += mAnimator.deltaPosition;
-            transform.parent.rotation *= mAnimator.deltaRotation;
-            // Debug.Log("RootMotioning..");
+            transform.position += mAnimator.deltaPosition;
+            transform.rotation *= mAnimator.deltaRotation;
+            //transform.parent.position += mAnimator.deltaPosition;
+            //transform.parent.rotation *= mAnimator.deltaRotation;
         }
     }
 }

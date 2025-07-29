@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 121823cfff911a346b9d6c7118a30037
+guid: a1ebd6f57ce09a54e851d7be816baa63
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
   - first:
       74: 1827226128182048838
-    second: Traversal_Movement_Jump_InPlace_Jump
+    second: Traversal_Movement_Jump_InPlace_WholeSequence
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -24,7 +24,7 @@ ModelImporter:
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
       might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'calf_l' has translation animation that
+      to improve retargeting quality.\n\t'spine_01' has translation animation that
       will be discarded.\n\t'foot_l' has translation animation that will be discarded.\n\t'ball_l'
       has translation animation that will be discarded.\n\t'foot_r' has translation
       animation that will be discarded.\n\t'ball_r' has translation animation that
@@ -42,18 +42,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Traversal_Movement_Jump_InPlace_Jump
+      name: Traversal_Movement_Jump_InPlace_WholeSequence
       takeName: Take 001
       internalID: 0
-      firstFrame: 12
-      lastFrame: 20
+      firstFrame: 0
+      lastFrame: 50
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1

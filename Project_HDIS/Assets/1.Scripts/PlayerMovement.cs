@@ -46,22 +46,31 @@ public class PlayerMovement : MonoBehaviour
         velocity.x = moveInput.x * _moveSpeed;
         mRigidbody.velocity = velocity;
 
+        //if (moveInput.x > .001f || moveInput.x < -.001f)
+        //{
+        //    // Rotate
+        //    EDirection targetDirection = moveInput.x > 0f ? EDirection.Right : EDirection.Left;
 
-        if (moveInput.x > .001f || moveInput.x < -.001f)
-        {
-            // Rotate
-            EDirection targetDirection = moveInput.x > 0f ? EDirection.Right : EDirection.Left;
+        //    if (targetDirection != mDirection)
+        //        _animator.Turning(true);
+        //    else
+        //        _animator.SetHorizontal(moveInput.x);
+        //        // _animator.ChangeDirection();
 
-            if (targetDirection != mDirection)
-                _animator.Turning(true);
-            else
-                _animator.SetHorizontal(moveInput.x);
-                // _animator.ChangeDirection();
+        //    mDirection = targetDirection;
+        //}
 
-            mDirection = targetDirection;
-        }
+        //RotateTowards(mDirection, true);
+    }
 
-        RotateTowards(mDirection, true);
+    public void ChangeDirection()
+    {
+        mDirection = mDirection == EDirection.Right ? EDirection.Left : EDirection.Right;
+    }
+
+    public void SetDirection(EDirection direction)
+    {
+        mDirection = direction;
     }
 
     public void PushPull(Vector2 moveInput, float speed)
@@ -84,7 +93,7 @@ public class PlayerMovement : MonoBehaviour
             mRigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             mGroundCheckDisableTimer = _groundCheckDisableDuration;
 
-            _animator.SetJump();
+            // _animator.SetJump();
         }
     }
 
@@ -182,11 +191,6 @@ public class PlayerMovement : MonoBehaviour
         Quaternion deltaRotation = Quaternion.AngleAxis(-rotationStep, Vector3.up);
         mRigidbody.MoveRotation(mRigidbody.rotation * deltaRotation);
         // mDirection = targetDirection;
-    }
-
-    public void ChangeDirection(EDirection direction)
-    {
-        mDirection = direction;
     }
 
     private void checkGround()

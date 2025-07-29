@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static PlayerMovement;
 
 public class PlayerMoveState : PlayerStateBase
 {
@@ -24,14 +25,30 @@ public class PlayerMoveState : PlayerStateBase
 
     public override void Tick()
     {
+        // Move
         mController.Movement.Move(mController.InputHandler.MoveInput);
 
+        // Rotate
+        if (mController.InputHandler.MoveInput.x > .001f || mController.InputHandler.MoveInput.x < -.001f)
+        {
+            // Rotate
+            EDirection targetDirection = mController.InputHandler.MoveInput.x > 0f ? EDirection.Right : EDirection.Left;
+
+            if (targetDirection != mController.Movement.Direction)
+                mController.Animator.Turning(true);
+            else
+                mController.Animator.SetHorizontal(mController.InputHandler.MoveInput.x);
+
+            mController.Movement.SetDirection(targetDirection);
+        }
+
+        mController.Movement.RotateTowards(mController.Movement.Direction, true);
+
+        // Turn Animation
         Vector3 currentForward = transform.forward;
 
         mRotationDirection = Vector3.SignedAngle(mPreviousForward, currentForward, Vector3.up);
 
-
-        // if(mPreviousDirection != mController.Movement.Direction)
         if(!mbRotating)
         {
             if (mRotationDirection < -5f)
@@ -57,7 +74,6 @@ public class PlayerMoveState : PlayerStateBase
 
         if (mRotationDirection > -1f && mRotationDirection < 1f)
         {
-            // mPreviousDirection = mController.Movement.Direction;
             mController.Animator.TurnL(false);
             mController.Animator.TurnR(false);
             mbRotating = false;
@@ -65,20 +81,18 @@ public class PlayerMoveState : PlayerStateBase
 
         mPreviousForward = currentForward;
 
-        //if (mController.InputHandler.MoveInput.x > .001f || mController.InputHandler.MoveInput.x < -.001f)
-        //{
-        //    PlayerMovement.EDirection inputDirection = mController.InputHandler.MoveInput.x > 0f ?
-        //        PlayerMovement.EDirection.Right : PlayerMovement.EDirection.Left;
-
-        //    if(inputDirection != mController.Movement.Direction)
-        //    {
-        //        mController.Animator.ChangeDirection();
-        //        // mController.StateMachine.SwitchState(mController.StateMachine.ChangeDirectionState);
-        //    }
-        //}
-
+        // Jump
         if (mController.InputHandler.JumpPressed)
         {
+            if(mController.InputHandler.MoveInput.x > .8f || mController.InputHandler.MoveInput.x < -.8f)
+            {
+                mController.StateMachine.JumpState.type = PlayerJumpState.EType.Run;
+            }
+            else
+            {
+                mController.StateMachine.JumpState.type = PlayerJumpState.EType.Idle;
+            }
+
             mController.StateMachine.SwitchState(mController.StateMachine.JumpState);
             mController.InputHandler.ResetJump();
         }

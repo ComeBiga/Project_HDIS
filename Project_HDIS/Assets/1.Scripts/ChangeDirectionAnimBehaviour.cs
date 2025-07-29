@@ -19,8 +19,9 @@ public class ChangeDirectionAnimBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //PlayerController controller = animator.GetComponentInParent<PlayerController>();
-        //controller.StateMachine.SwitchState(controller.StateMachine.MoveState);
+        PlayerController controller = animator.GetComponentInParent<PlayerController>();
+        controller.StateMachine.SwitchState(controller.StateMachine.MoveState);
+        // controller.StateMachine.SwitchState(controller.StateMachine.MoveState);
 
         // Debug.Log("OnStateExit");
     }
