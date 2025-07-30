@@ -28,10 +28,9 @@ public class PlayerMoveState : PlayerStateBase
         // Move
         mController.Movement.Move(mController.InputHandler.MoveInput);
 
-        // Rotate
+        // Set Direction
         if (mController.InputHandler.MoveInput.x > .001f || mController.InputHandler.MoveInput.x < -.001f)
         {
-            // Rotate
             EDirection targetDirection = mController.InputHandler.MoveInput.x > 0f ? EDirection.Right : EDirection.Left;
 
             if (targetDirection != mController.Movement.Direction)
@@ -41,8 +40,6 @@ public class PlayerMoveState : PlayerStateBase
 
             mController.Movement.SetDirection(targetDirection);
         }
-
-        mController.Movement.RotateTowards(mController.Movement.Direction, true);
 
         // Turn Animation
         Vector3 currentForward = transform.forward;
@@ -84,17 +81,31 @@ public class PlayerMoveState : PlayerStateBase
         // Jump
         if (mController.InputHandler.JumpPressed)
         {
-            if(mController.InputHandler.MoveInput.x > .8f || mController.InputHandler.MoveInput.x < -.8f)
+            //if(mController.InputHandler.MoveInput.x > .3f || mController.InputHandler.MoveInput.x < -.3f)
+            //{
+            //    mController.StateMachine.JumpState.type = PlayerJumpState.EType.Run;
+            //}
+            //else
+            //{
+            //    mController.StateMachine.JumpState.type = PlayerJumpState.EType.Idle;
+
+            // if(mController.Animator.IsCurrentState(mController.Animator.RunStateHash))
+            if (mController.InputHandler.MoveInput.x > .01f || mController.InputHandler.MoveInput.x < -.01f)
             {
-                mController.StateMachine.JumpState.type = PlayerJumpState.EType.Run;
+                // mController.StateMachine.JumpState.type = PlayerJumpState.EType.Run;
+
+                mController.StateMachine.SwitchState(mController.StateMachine.RunJumpState);
+                mController.InputHandler.ResetJump();
             }
+            //else if (mController.InputHandler.MoveInput.x < .3f && mController.InputHandler.MoveInput.x > -.3f)
             else
             {
-                mController.StateMachine.JumpState.type = PlayerJumpState.EType.Idle;
+                // mController.StateMachine.JumpState.type = PlayerJumpState.EType.Idle;
+
+                mController.StateMachine.SwitchState(mController.StateMachine.JumpState);
+                mController.InputHandler.ResetJump();
             }
 
-            mController.StateMachine.SwitchState(mController.StateMachine.JumpState);
-            mController.InputHandler.ResetJump();
         }
     }
 }

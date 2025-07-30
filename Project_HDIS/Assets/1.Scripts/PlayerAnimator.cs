@@ -6,6 +6,9 @@ using static PlayerMovement;
 [RequireComponent(typeof(Animator))]
 public class PlayerAnimator : MonoBehaviour
 {
+    public readonly int IdleStateHash = Animator.StringToHash("Idle");
+    public readonly int RunStateHash = Animator.StringToHash("Run");
+
     public Animator Animator => mAnimator;
 
     public bool enableRootMotion = false;
@@ -13,6 +16,7 @@ public class PlayerAnimator : MonoBehaviour
     private readonly int HorizontalHash = Animator.StringToHash("Horizontal");
     private readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
     private readonly int JumpHash = Animator.StringToHash("Jump");
+    private readonly int RunJumpHash = Animator.StringToHash("RunJump");
     private readonly int PushPullHash = Animator.StringToHash("PushPull");
     private readonly int ClimbHash = Animator.StringToHash("Climb");
     private readonly int ClimbDownHash = Animator.StringToHash("ClimbDown");
@@ -22,6 +26,11 @@ public class PlayerAnimator : MonoBehaviour
     private readonly int TurnRHash = Animator.StringToHash("TurnR");
 
     private Animator mAnimator;
+
+    public bool IsCurrentState(int tagHash)
+    {
+        return mAnimator.GetCurrentAnimatorStateInfo(0).tagHash == RunStateHash;
+    }
 
     public void SetHorizontal(float value)
     {
@@ -56,6 +65,11 @@ public class PlayerAnimator : MonoBehaviour
     public void SetJump()
     {
         mAnimator.SetTrigger(JumpHash);
+    }
+
+    public void SetRunJump()
+    {
+        mAnimator.SetTrigger(RunJumpHash);
     }
 
     public void SetPushPull(bool value)

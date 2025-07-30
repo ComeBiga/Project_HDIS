@@ -20,8 +20,8 @@ public class PlayerChangeDirectionState : PlayerStateBase
         targetDirection = mController.Movement.Direction == PlayerMovement.EDirection.Left ?
                           PlayerMovement.EDirection.Right : PlayerMovement.EDirection.Left;
 
-        mController.Animator.Flip(true);
-        mController.Movement.RotateTowards(targetDirection, lerp: false);
+        // mController.Animator.Flip(true);
+        // mController.Movement.RotateTowards(targetDirection, lerp: false);
     }
 
     public override void ExitState()
@@ -34,7 +34,7 @@ public class PlayerChangeDirectionState : PlayerStateBase
         // mController.Animator.ResetRootMotionRotation();
         // mController.Animator.Animator.applyRootMotion = false;
         // Debug.Log(mController.Animator.Animator.GetCurrentAnimatorStateInfo(0).IsTag("ChangeDirection"));
-        mController.Animator.Flip(false);
+        // mController.Animator.Flip(false);
 
         //Debug.Log("=====EXIT=====");
         //Debug.Log("body " + mController.Animator.Animator.bodyRotation.eulerAngles);

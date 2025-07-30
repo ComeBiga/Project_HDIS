@@ -8,10 +8,12 @@ public class PlayerStateMachine : MonoBehaviour
     public PlayerStateBase CurrentState => mCurrentState;
     public PlayerMoveState MoveState => _moveState;
     public PlayerJumpState JumpState => _jumpState;
+    public PlayerRunJumpState RunJumpState => _runJumpState;
     public PlayerChangeDirectionState ChangeDirectionState => _changeDirectionState;
 
     [SerializeField] private PlayerMoveState _moveState;
     [SerializeField] private PlayerJumpState _jumpState;
+    [SerializeField] private PlayerRunJumpState _runJumpState;
     [SerializeField] private PlayerChangeDirectionState _changeDirectionState;
 
     private PlayerController mController;
@@ -31,6 +33,7 @@ public class PlayerStateMachine : MonoBehaviour
 
         mStates.Add(_moveState);
         mStates.Add(_jumpState);
+        mStates.Add(_runJumpState);
         mStates.Add(_changeDirectionState);
 
         foreach(var state in mStates)

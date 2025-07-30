@@ -812,7 +812,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 66ee3d912425b99498e50d3f9dc0da7c, type: 2}
+      objectReference: {fileID: 9100000, guid: 9d82d0013626c3842ae5b99a5b6f4ad9, type: 2}
     - target: {fileID: 8990516482751660130, guid: 17f3cfe4d6c92b145a7b36290ba715df,
         type: 3}
       propertyPath: m_ApplyRootMotion
@@ -847,6 +847,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 989947694}
+    - targetCorrespondingSourceObject: {fileID: 417969324499527791, guid: 17f3cfe4d6c92b145a7b36290ba715df,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 989947705}
     - targetCorrespondingSourceObject: {fileID: 417969324499527791, guid: 17f3cfe4d6c92b145a7b36290ba715df,
         type: 3}
       insertIndex: -1
@@ -913,6 +917,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveState: {fileID: 989947695}
   _jumpState: {fileID: 989947694}
+  _runJumpState: {fileID: 989947705}
   _changeDirectionState: {fileID: 989947693}
 --- !u!114 &989947697
 MonoBehaviour:
@@ -972,6 +977,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 909117991}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &989947705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989947692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b478c6fe6227f854caee028537bbc4b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &997490438
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1741,6 +1758,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveState: {fileID: 1660668831}
   _jumpState: {fileID: 1660668833}
+  _runJumpState: {fileID: 0}
   _changeDirectionState: {fileID: 1660668834}
 --- !u!114 &1660668833
 MonoBehaviour:

@@ -27,7 +27,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerAnimator _animator;
 
     private Rigidbody mRigidbody;
-    // private Vector3 mDirection = Vector3.right;
     private EDirection mDirection = EDirection.Right;
     private bool mbJumping = false;
     private bool mbIsGrounded = false;
@@ -37,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
     {
         mRigidbody = GetComponent<Rigidbody>();
 
-        RotateTowards(mDirection, lerp : false);
+        mRigidbody.MoveRotation(DirectionToRotation(mDirection));
     }
 
     public void Move(Vector2 moveInput)
@@ -45,22 +44,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocity = mRigidbody.velocity;
         velocity.x = moveInput.x * _moveSpeed;
         mRigidbody.velocity = velocity;
-
-        //if (moveInput.x > .001f || moveInput.x < -.001f)
-        //{
-        //    // Rotate
-        //    EDirection targetDirection = moveInput.x > 0f ? EDirection.Right : EDirection.Left;
-
-        //    if (targetDirection != mDirection)
-        //        _animator.Turning(true);
-        //    else
-        //        _animator.SetHorizontal(moveInput.x);
-        //        // _animator.ChangeDirection();
-
-        //    mDirection = targetDirection;
-        //}
-
-        //RotateTowards(mDirection, true);
     }
 
     public void ChangeDirection()
@@ -130,67 +113,17 @@ public class PlayerMovement : MonoBehaviour
     public void Tick()
     {
         // Rotate
-        // rotateTowards(mDirection, _rotateSpeed);
+        updateRotation();
 
         // Check Ground
         checkGround();
     }
 
-    public void RotateTowards(EDirection targetDirection, bool lerp)
+    private void updateRotation()
     {
-        // Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-        Quaternion targetRotation = Quaternion.identity;
+        Quaternion targetRotation = DirectionToRotation(mDirection);
 
-        if (targetDirection == EDirection.Right)
-        {
-            targetRotation = Quaternion.Euler(0f, 90f, 0f);
-        }
-        else if (targetDirection == EDirection.Left)
-        {
-            targetRotation = Quaternion.Euler(0f, -90f, 0f);
-        }
-
-        if (lerp)
-        {
-            mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed));
-        }
-        else
-        {
-            mRigidbody.MoveRotation(targetRotation);
-            mDirection = targetDirection;
-        }
-    }
-    
-    public void RotateTowards(EDirection targetDirection)
-    {
-        // Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-        Quaternion targetRotation = Quaternion.identity;
-
-        if (targetDirection == EDirection.Right)
-        {
-            targetRotation = Quaternion.Euler(0f, -270f, 0f);
-        }
-        else if (targetDirection == EDirection.Left)
-        {
-            targetRotation = Quaternion.Euler(0f, -90f, 0f);
-        }
-
-
-        float angle = Vector3.SignedAngle(transform.rotation * Vector3.forward, targetRotation * Vector3.forward, Vector3.up);
-
-        Debug.Log(angle);
-        if (angle > 0f)
-            return;
-
-        if (angle < 0f)
-            angle += 360f;
-
-
-        float rotationStep = Mathf.Min(angle, Time.deltaTime * _rotateSpeed);
-
-        Quaternion deltaRotation = Quaternion.AngleAxis(-rotationStep, Vector3.up);
-        mRigidbody.MoveRotation(mRigidbody.rotation * deltaRotation);
-        // mDirection = targetDirection;
+        mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed));
     }
 
     private void checkGround()
@@ -213,5 +146,21 @@ public class PlayerMovement : MonoBehaviour
 
             _animator.SetIsGrounded(mbIsGrounded);
         }
+    }
+
+    private Quaternion DirectionToRotation(EDirection direction)
+    {
+        Quaternion targetRotation = Quaternion.identity;
+
+        if (direction == EDirection.Right)
+        {
+            targetRotation = Quaternion.Euler(0f, 90f, 0f);
+        }
+        else if (direction == EDirection.Left)
+        {
+            targetRotation = Quaternion.Euler(0f, -90f, 0f);
+        }
+        
+        return targetRotation;
     }
 }
