@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,11 +13,20 @@ public class PlayerAnimator : MonoBehaviour
     public Animator Animator => mAnimator;
 
     public bool enableRootMotion = false;
+    public event Action onAnimationIK = null;
 
+    [SerializeField]
+    private float _rootMotionSpeed = 1f;
+
+    private readonly int StateHash = Animator.StringToHash("State");
     private readonly int HorizontalHash = Animator.StringToHash("Horizontal");
+    private readonly int VerticalHash = Animator.StringToHash("Vertical");
+    private readonly int InputXMagnitudeHash = Animator.StringToHash("InputXMagnitude");
+    private readonly int InputYMagnitudeHash = Animator.StringToHash("InputYMagnitude");
     private readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
     private readonly int JumpHash = Animator.StringToHash("Jump");
     private readonly int RunJumpHash = Animator.StringToHash("RunJump");
+    private readonly int LandingHash = Animator.StringToHash("Landing");
     private readonly int PushPullHash = Animator.StringToHash("PushPull");
     private readonly int ClimbHash = Animator.StringToHash("Climb");
     private readonly int ClimbDownHash = Animator.StringToHash("ClimbDown");
@@ -24,6 +34,7 @@ public class PlayerAnimator : MonoBehaviour
     private readonly int TurningHash = Animator.StringToHash("Turning");
     private readonly int TurnLHash = Animator.StringToHash("TurnL");
     private readonly int TurnRHash = Animator.StringToHash("TurnR");
+    private readonly int LadderTopHash = Animator.StringToHash("LadderTop");
 
     private Animator mAnimator;
 
@@ -32,9 +43,29 @@ public class PlayerAnimator : MonoBehaviour
         return mAnimator.GetCurrentAnimatorStateInfo(0).tagHash == RunStateHash;
     }
 
+    public void SetState(int value)
+    {
+        mAnimator.SetInteger(StateHash, value);
+    }
+
     public void SetHorizontal(float value)
     {
         mAnimator.SetFloat(HorizontalHash, value);
+    }
+
+    public void SetVertical(float value)
+    {
+        mAnimator.SetFloat(VerticalHash, value);
+    }
+
+    public void SetInputXMagnitude(float value)
+    {
+        mAnimator.SetFloat(InputXMagnitudeHash, value);
+    }
+
+    public void SetInputYMagnitude(float value)
+    {
+        mAnimator.SetFloat(InputYMagnitudeHash, value);
     }
 
     public void ChangeDirection()
@@ -72,6 +103,11 @@ public class PlayerAnimator : MonoBehaviour
         mAnimator.SetTrigger(RunJumpHash);
     }
 
+    public void SetLanding()
+    {
+        mAnimator.SetTrigger(LandingHash);
+    }
+
     public void SetPushPull(bool value)
     {
         mAnimator.SetBool(PushPullHash, value);
@@ -85,6 +121,11 @@ public class PlayerAnimator : MonoBehaviour
     public void SetClimbDown()
     {
         mAnimator.SetTrigger(ClimbDownHash);
+    }
+
+    public void SetLadderTop(bool value)
+    {
+        mAnimator.SetBool(LadderTopHash, value);
     }
 
     public void ResetRootMotionRotation()
@@ -140,10 +181,15 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (mAnimator.applyRootMotion && enableRootMotion)
         {
-            transform.position += mAnimator.deltaPosition;
-            transform.rotation *= mAnimator.deltaRotation;
-            //transform.parent.position += mAnimator.deltaPosition;
-            //transform.parent.rotation *= mAnimator.deltaRotation;
+            //transform.position += mAnimator.deltaPosition;
+            //transform.rotation *= mAnimator.deltaRotation;
+            transform.parent.position += mAnimator.deltaPosition * _rootMotionSpeed;
+            transform.parent.rotation *= mAnimator.deltaRotation;
         }
+    }
+
+    private void OnAnimatorIK(int layerIndex)
+    {
+        onAnimationIK?.Invoke();
     }
 }

@@ -47,7 +47,7 @@ ModelImporter:
       name: AnimSeq_Traversal_Movement_Jump_fromRun_toRun
       takeName: Unreal Take
       internalID: 0
-      firstFrame: 10
+      firstFrame: 13
       lastFrame: 27
       wrapMode: 0
       orientationOffsetY: 0

@@ -45,11 +45,11 @@ ModelImporter:
       name: Traversal_Movement_Jump_InPlace_Jump
       takeName: Take 001
       internalID: 0
-      firstFrame: 12
+      firstFrame: 16
       lastFrame: 20
       wrapMode: 0
       orientationOffsetY: 0
-      level: 0
+      level: 0.4
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0

@@ -20,7 +20,9 @@ public class ChangeDirectionAnimBehaviour : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         PlayerController controller = animator.GetComponentInParent<PlayerController>();
-        controller.StateMachine.SwitchState(controller.StateMachine.MoveState);
+        var ladderStateBase = controller.StateMachine.GetStateBase(PlayerStateMachine.EState.Ladder);
+        (ladderStateBase as PlayerLadderState).EndToPlatform();
+        // controller.StateMachine.SwitchState(PlayerStateMachine.EState.Move);
         // controller.StateMachine.SwitchState(controller.StateMachine.MoveState);
 
         // Debug.Log("OnStateExit");

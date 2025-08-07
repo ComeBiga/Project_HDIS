@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public Vector3 Velocity => mRigidbody.velocity;
     public bool Jumping => mbJumping;
+    public bool IsGrounded => mbIsGrounded;
     public Vector3 Position => transform.position;
     public EDirection Direction => mDirection;
 
@@ -27,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerAnimator _animator;
 
     private Rigidbody mRigidbody;
+    private CapsuleCollider mCapsuleCollider;
     private EDirection mDirection = EDirection.Right;
     private bool mbJumping = false;
     private bool mbIsGrounded = false;
@@ -35,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     public void Initialize()
     {
         mRigidbody = GetComponent<Rigidbody>();
+        mCapsuleCollider = GetComponent<CapsuleCollider>();
 
         mRigidbody.MoveRotation(DirectionToRotation(mDirection));
     }
@@ -89,6 +92,30 @@ public class PlayerMovement : MonoBehaviour
         mRigidbody.velocity = Vector3.zero;
         mRigidbody.isKinematic = false;
     }
+
+    public void ClimbLadder(Vector3 moveInput, float climbSpeed)
+    {
+        Vector3 velocity = mRigidbody.velocity;
+        velocity.y = moveInput.y * climbSpeed;
+        mRigidbody.velocity = velocity;
+    }
+
+    public void StartClimbLadder()
+    {
+        mRigidbody.useGravity = false;
+        //mRigidbody.isKinematic = true;
+        mRigidbody.velocity = Vector3.zero;
+        //mRigidbody.isKinematic = false;
+        mCapsuleCollider.enabled = false;
+    }
+
+    public void StopClimbLadder()
+    {
+        mRigidbody.useGravity = true;
+        mRigidbody.isKinematic = false;
+        mCapsuleCollider.enabled = true;
+    }
+
     public void Climb(Bounds bounds)
     {
         //SetPosition(Position.x, bounds.max.y, bounds.min.z + (bounds.size.z / 2f));

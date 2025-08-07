@@ -10,12 +10,13 @@ public class PlayerRunJumpState : PlayerStateBase
     {
         mController.Movement.Jump();
 
-        mController.Animator.SetRunJump();
+        //mController.Animator.SetRunJump();
+        mController.Animator.SetJump();
     }
 
     public override void ExitState()
     {
-
+        mController.Animator.SetLanding();
     }
 
     public override void Tick()
@@ -35,10 +36,11 @@ public class PlayerRunJumpState : PlayerStateBase
 
         mController.Movement.Move(mMoveInput);
         mController.Animator.SetHorizontal(mController.InputHandler.MoveInput.x);
+        mController.Animator.SetInputXMagnitude(Mathf.Abs(mController.InputHandler.MoveInput.x));
 
         if (!mController.Movement.Jumping)
         {
-            mController.StateMachine.SwitchState(mController.StateMachine.MoveState);
+            mController.StateMachine.SwitchState(PlayerStateMachine.EState.Move);
         }
     }
 }

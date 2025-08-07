@@ -24,6 +24,22 @@ public class PlayerController : MonoBehaviour
     private bool mbPushPull = false;
     private PushPullObject mPushPullObject;
 
+    public bool CheckLadderObject(out Collider collider)
+    {
+        //Collider[] ladderColliders = Physics.OverlapSphere(_trPushPullOrigin.position, _pushPullRange, _pushPullLayer);
+        Collider[] ladderColliders = Physics.OverlapSphere(_trPushPullOrigin.position, _pushPullRange, LayerMask.GetMask("Ladder"));
+
+        if (ladderColliders.Length > 0)
+        {
+            collider = ladderColliders[0];
+            // pushPullObject = pushPullColliders[0].GetComponent<PushPullObject>();
+            return true;
+        }
+
+        collider = null;
+        return false;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,13 +48,13 @@ public class PlayerController : MonoBehaviour
         mMovement.Initialize();
 
         mStateMachine = GetComponent<PlayerStateMachine>();
-        mStateMachine.SwitchState(mStateMachine.MoveState);
+        mStateMachine.SwitchState(PlayerStateMachine.EState.Move);
     }
 
     // Update is called once per frame
     void Update()
     {
-        mStateMachine.CurrentState.Tick();
+        mStateMachine.CurrentStateBase.Tick();
         //if (mInputHandler.IsInteracting && checkPushPullObject(out mPushPullObject))
         //{
         //    mMovement.PushPull(mInputHandler.MoveInput, mPushPullObject.PushPullSpeed);

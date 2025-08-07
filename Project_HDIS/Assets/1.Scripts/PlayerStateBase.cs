@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class PlayerStateBase : MonoBehaviour
 {
+    public PlayerStateMachine.EState key;
+
     protected PlayerController mController;
 
     public void Initialize(PlayerController controller)

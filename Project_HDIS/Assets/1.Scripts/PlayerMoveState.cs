@@ -1,3 +1,4 @@
+using PropMaker;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,15 +8,13 @@ public class PlayerMoveState : PlayerStateBase
 {
     private Vector3 mPreviousForward;
     private float mRotationDirection;
+    private bool mbChangeDirection = false;
     private bool mbRotating = false;
-    // private PlayerMovement.EDirection mPreviousDirection;
 
     public override void EnterState()
     {
-        // mPreviousForward = transform.forward;
         mPreviousForward = mController.Movement.Direction == PlayerMovement.EDirection.Left ?
                            Vector3.left : Vector3.right;
-        // mPreviousDirection = mController.Movement.Direction;
     }
 
     public override void ExitState() 
@@ -27,6 +26,7 @@ public class PlayerMoveState : PlayerStateBase
     {
         // Move
         mController.Movement.Move(mController.InputHandler.MoveInput);
+        mController.Animator.SetInputXMagnitude(Mathf.Abs(mController.InputHandler.MoveInput.x));
 
         // Set Direction
         if (mController.InputHandler.MoveInput.x > .001f || mController.InputHandler.MoveInput.x < -.001f)
@@ -34,9 +34,14 @@ public class PlayerMoveState : PlayerStateBase
             EDirection targetDirection = mController.InputHandler.MoveInput.x > 0f ? EDirection.Right : EDirection.Left;
 
             if (targetDirection != mController.Movement.Direction)
+            {
+                mbChangeDirection = true;
                 mController.Animator.Turning(true);
+            }
             else
+            {
                 mController.Animator.SetHorizontal(mController.InputHandler.MoveInput.x);
+            }
 
             mController.Movement.SetDirection(targetDirection);
         }
@@ -46,13 +51,14 @@ public class PlayerMoveState : PlayerStateBase
 
         mRotationDirection = Vector3.SignedAngle(mPreviousForward, currentForward, Vector3.up);
 
-        if(!mbRotating)
+        if (mbChangeDirection)
         {
             if (mRotationDirection < -5f)
             {
                 mController.Animator.TurnL(true);
                 mController.Animator.TurnR(false);
                 mController.Animator.Turning(false);
+                mbChangeDirection = false;
                 mbRotating = true;
             }
             else if (mRotationDirection > 5f)
@@ -60,6 +66,7 @@ public class PlayerMoveState : PlayerStateBase
                 mController.Animator.TurnL(false);
                 mController.Animator.TurnR(true);
                 mController.Animator.Turning(false);
+                mbChangeDirection = false;
                 mbRotating = true;
             }
             //else
@@ -68,12 +75,14 @@ public class PlayerMoveState : PlayerStateBase
             //    mController.Animator.TurnR(false);
             //}
         }
-
-        if (mRotationDirection > -1f && mRotationDirection < 1f)
+        else
         {
-            mController.Animator.TurnL(false);
-            mController.Animator.TurnR(false);
-            mbRotating = false;
+            if (mRotationDirection > -1f && mRotationDirection < 1f)
+            {
+                mController.Animator.TurnL(false);
+                mController.Animator.TurnR(false);
+                mbRotating = false;
+            }
         }
 
         mPreviousForward = currentForward;
@@ -94,7 +103,7 @@ public class PlayerMoveState : PlayerStateBase
             {
                 // mController.StateMachine.JumpState.type = PlayerJumpState.EType.Run;
 
-                mController.StateMachine.SwitchState(mController.StateMachine.RunJumpState);
+                mController.StateMachine.SwitchState(PlayerStateMachine.EState.RunJump);
                 mController.InputHandler.ResetJump();
             }
             //else if (mController.InputHandler.MoveInput.x < .3f && mController.InputHandler.MoveInput.x > -.3f)
@@ -102,10 +111,22 @@ public class PlayerMoveState : PlayerStateBase
             {
                 // mController.StateMachine.JumpState.type = PlayerJumpState.EType.Idle;
 
-                mController.StateMachine.SwitchState(mController.StateMachine.JumpState);
+                mController.StateMachine.SwitchState(PlayerStateMachine.EState.IdleJump);
                 mController.InputHandler.ResetJump();
             }
 
+        }
+
+        // Ladder
+        if (mController.CheckLadderObject(out Collider collider))
+        {
+            if (mController.InputHandler.MoveInput.y > .1f)
+            {
+                PlayerStateBase ladderStateBase = mController.StateMachine.SwitchState(PlayerStateMachine.EState.Ladder);
+
+                Ladder ladder = collider.GetComponent<Ladder>();
+                (ladderStateBase as PlayerLadderState).SetLadder(ladder);
+            }
         }
     }
 }

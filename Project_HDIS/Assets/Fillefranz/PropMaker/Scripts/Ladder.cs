@@ -53,6 +53,8 @@ namespace PropMaker
         Vector3 right => Vector3.Cross(forward, up).normalized;
         float length = 0;
 
+        private List<Vector3> mStepPositions = new List<Vector3>();
+
 
         public override void UpdateProp()
         {
@@ -123,6 +125,8 @@ namespace PropMaker
 
         void PlaceSteps()
         {
+            mStepPositions.Clear();
+
             for (int i = 0; i < numberOfSteps; i++)
             {
                 float dst = stepPadding + i * stepRadius * 2  + stepRadius + stepSpacing * (i +1);
@@ -132,7 +136,36 @@ namespace PropMaker
                 Vector3[] circleB = Helper.PointsOnCircle(stepRadius, stepResolution, centerB, up, right);
 
                 ConnectCircles(circleB, circleA, tris, 0, 1, false);
+
+                Vector3 stepCenter = centerA - centerB;
+                stepCenter.y = centerA.y;
+                stepCenter.z = centerA.z;
+                mStepPositions.Add(stepCenter);
             }
+        }
+
+        public List<Vector3> GetStepPositions()
+        {
+            List<Vector3> stepPositions = new List<Vector3>(numberOfSteps);
+
+            for (int i = 0; i < numberOfSteps; i++)
+            {
+                float dst = stepPadding + i * stepRadius * 2 + stepRadius + stepSpacing * (i + 1);
+                Vector3 centerA = start + forward * dst + right * width * 0.5f - up * railThickness * 0.5f;
+                Vector3 centerB = centerA - right * width;
+                //Vector3[] circleA = Helper.PointsOnCircle(stepRadius, stepResolution, centerA, up, right);
+                //Vector3[] circleB = Helper.PointsOnCircle(stepRadius, stepResolution, centerB, up, right);
+
+                //ConnectCircles(circleB, circleA, tris, 0, 1, false);
+
+                Vector3 stepCenter = new Vector3();
+                // stepCenter.x = centerB.x - centerA.x;
+                stepCenter.y = centerA.y;
+                // stepCenter.z = centerA.z;
+                stepPositions.Add(transform.position + stepCenter);
+            }
+
+            return stepPositions;
         }
 
         protected override void SetMesh()
@@ -188,6 +221,18 @@ namespace PropMaker
             start -= center;
             end -= center;
             transform.position += center;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+
+            List<Vector3> stepPositions = GetStepPositions();
+
+            for (int i = 0; i < stepPositions.Count; ++i)
+            {
+                Gizmos.DrawWireSphere(stepPositions[i], .05f);
+            }
         }
     }
 }
