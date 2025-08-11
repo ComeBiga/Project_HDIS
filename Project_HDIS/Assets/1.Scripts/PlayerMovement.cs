@@ -10,8 +10,11 @@ public class PlayerMovement : MonoBehaviour
     public bool IsGrounded => mbIsGrounded;
     public Vector3 Position => transform.position;
     public EDirection Direction => mDirection;
+    public EDirection OppositeDirection => (mDirection == EDirection.Left) ? EDirection.Right : EDirection.Left;
 
     public enum EDirection { Left, Right };
+
+    public bool ignoreUpdateRotation = false;
 
     [Header("Move")]
     [SerializeField] private float _moveSpeed = 5f;
@@ -49,6 +52,34 @@ public class PlayerMovement : MonoBehaviour
         mRigidbody.velocity = velocity;
     }
 
+    
+    public void RotateTo(Quaternion from, EDirection direction, float t)
+    {
+        Quaternion targetRotation = DirectionToRotation(direction);
+
+        mRigidbody.MoveRotation(Quaternion.Lerp(from, targetRotation, t));
+    }
+    
+    public void RotateTo(EDirection fromDirection, EDirection toDirection, float t)
+    {
+        Quaternion fromRotation = DirectionToRotation(fromDirection);
+        Quaternion toRotation = DirectionToRotation(toDirection);
+
+        mRigidbody.MoveRotation(Quaternion.Lerp(fromRotation, toRotation, t));
+    }
+
+    public void RotateTo(EDirection direction, float t)
+    {
+        Quaternion targetRotation = DirectionToRotation(direction);
+
+        mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, t));
+    }
+
+    public void RotateTo(EDirection direction)
+    {
+        RotateTo(direction, Time.deltaTime * _rotateSpeed);
+    }
+
     public void ChangeDirection()
     {
         mDirection = mDirection == EDirection.Right ? EDirection.Left : EDirection.Right;
@@ -57,6 +88,29 @@ public class PlayerMovement : MonoBehaviour
     public void SetDirection(EDirection direction)
     {
         mDirection = direction;
+    }
+
+    public void UpdateRotation()
+    {
+        Quaternion targetRotation = DirectionToRotation(mDirection);
+
+        mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed));
+    }
+
+    public Quaternion DirectionToRotation(EDirection direction)
+    {
+        Quaternion targetRotation = Quaternion.identity;
+
+        if (direction == EDirection.Right)
+        {
+            targetRotation = Quaternion.Euler(0f, 90f, 0f);
+        }
+        else if (direction == EDirection.Left)
+        {
+            targetRotation = Quaternion.Euler(0f, -90f, 0f);
+        }
+
+        return targetRotation;
     }
 
     public void PushPull(Vector2 moveInput, float speed)
@@ -140,17 +194,10 @@ public class PlayerMovement : MonoBehaviour
     public void Tick()
     {
         // Rotate
-        updateRotation();
+        // updateRotation();
 
         // Check Ground
         checkGround();
-    }
-
-    private void updateRotation()
-    {
-        Quaternion targetRotation = DirectionToRotation(mDirection);
-
-        mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed));
     }
 
     private void checkGround()
@@ -173,21 +220,5 @@ public class PlayerMovement : MonoBehaviour
 
             _animator.SetIsGrounded(mbIsGrounded);
         }
-    }
-
-    private Quaternion DirectionToRotation(EDirection direction)
-    {
-        Quaternion targetRotation = Quaternion.identity;
-
-        if (direction == EDirection.Right)
-        {
-            targetRotation = Quaternion.Euler(0f, 90f, 0f);
-        }
-        else if (direction == EDirection.Left)
-        {
-            targetRotation = Quaternion.Euler(0f, -90f, 0f);
-        }
-        
-        return targetRotation;
     }
 }

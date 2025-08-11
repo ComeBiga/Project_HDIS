@@ -23,11 +23,14 @@ public class PlayerLadderState : PlayerStateBase
     private bool mbLadderTop = false;
     private List<Vector3> mStepPositions;
     private int mCurrentStepNum = 0;
+    private int mTopStepNum;
 
     private float mStepNormalizedTime = 0f;
     private bool mbClimbing = false;
     private float mClimbMultiplier = 0f;
     private EClimbType mClimbType = EClimbType.Idle;
+    private bool mbIsHandDefault = true;
+    private PlayerMovement.EDirection mLadderDirection;
 
     // IK
     private bool mbActiveIK = false;
@@ -42,7 +45,7 @@ public class PlayerLadderState : PlayerStateBase
     {
         // mController.Animator.enableRootMotion = true;
         mController.Movement.StartClimbLadder();
-        mController.Animator.SetLadderTop(false);
+        // mController.Animator.SetLadderTop(false);
 
         //Vector3 position = mController.Movement.Position;
         //mController.Movement.SetPosition(position.x, position.y + _startHeight, position.z);
@@ -50,15 +53,15 @@ public class PlayerLadderState : PlayerStateBase
         mAnimator = mController.Animator.Animator;
         mGroundCheckDisableTimer = 0f;
         mStepNormalizedTime = 0f;
-        mCurrentStepNum = 0;
+        // mCurrentStepNum = 0;
         mbClimbing = false;
         mbLadderTop = false;
 
         mbActiveIK = true;
-        mLeftHandStepNum = 5;
-        mRightHandStepNum = 5;
-        mLeftHandIKWeight = 1f;
-        mRightHandIKWeight = 1f;
+        //mLeftHandStepNum = 5;
+        //mRightHandStepNum = 5;
+        //mLeftHandIKWeight = 1f;
+        //mRightHandIKWeight = 1f;
 
         mController.Animator.onAnimationIK -= updateAnimatorIK;
         mController.Animator.onAnimationIK += updateAnimatorIK;
@@ -67,6 +70,7 @@ public class PlayerLadderState : PlayerStateBase
     public override void ExitState()
     {
         mController.Movement.StopClimbLadder();
+        mController.Animator.SetLadderTop(false);
 
         mbActiveIK = false;
         mController.Animator.onAnimationIK -= updateAnimatorIK;
@@ -82,6 +86,29 @@ public class PlayerLadderState : PlayerStateBase
             return;
         }
 
+        if (animatorStateInfo.IsTag("StartFromTop"))
+        {
+            // mController.Movement.SetDirection(mLadderDirection);
+            Vector3 deltaPosition = mController.Animator.Animator.deltaPosition;
+            deltaPosition.x *= (transform.position.x > mStepPositions[mCurrentStepNum].x - .5f) ? 2f : 0f;
+            deltaPosition.y *= (transform.position.y > mStepPositions[mCurrentStepNum].y) ? 2f : 0f;
+            deltaPosition.z = 0f;
+            transform.position += deltaPosition;
+            // transform.rotation *= mController.Animator.Animator.deltaRotation;
+            //transform.rotation = Quaternion.Lerp(mController.Movement.DirectionToRotation(mController.Movement.Direction),
+            //                                    mController.Movement.DirectionToRotation(mController.Movement.OppositeDirection),
+            //                                    animatorStateInfo.normalizedTime);
+            mController.Movement.RotateTo(mController.Movement.DirectionToRotation(mController.Movement.Direction),
+                                        mController.Movement.OppositeDirection,
+                                        animatorStateInfo.normalizedTime);
+
+            mController.Animator.SetLadderTop(false);
+
+            Debug.Log(transform.rotation.eulerAngles);
+
+            return;
+        }
+
         if (!animatorStateInfo.IsTag("ClimbUp"))
             return;
 
@@ -93,6 +120,7 @@ public class PlayerLadderState : PlayerStateBase
             if (mController.InputHandler.MoveInput.y > .1f)
             {
                 mbClimbing = true;
+                mbIsHandDefault = !mbIsHandDefault;
                 mClimbMultiplier = 1f;
                 mStepNormalizedTime += .5f;
                 mClimbType = EClimbType.ClimbUp;
@@ -112,6 +140,7 @@ public class PlayerLadderState : PlayerStateBase
             else if (mController.InputHandler.MoveInput.y < -.1f)
             {
                 mbClimbing = true;
+                mbIsHandDefault = !mbIsHandDefault;
                 mClimbMultiplier = -1f;
                 mStepNormalizedTime -= .5f;
                 mClimbType = EClimbType.ClimbDown;
@@ -138,9 +167,12 @@ public class PlayerLadderState : PlayerStateBase
         }
 
         // Ladder Top
-        if ((mCurrentStepNum + 6) == (mStepPositions.Count))
+        //if ((!mbIsHandDefault && (mCurrentStepNum + 5) == (mStepPositions.Count))
+        //    || (mbIsHandDefault && (mCurrentStepNum + 5) == (mStepPositions.Count)))
+        if(mCurrentStepNum > mTopStepNum)
         {
-            if (mCurrentStepNum % 2 == 0)
+            // if (mCurrentStepNum % 2 == 0)
+            if (mbIsHandDefault)
             {
                 Vector3 topPos = transform.position;
                 topPos.y = mStepPositions[mCurrentStepNum].y;
@@ -204,15 +236,45 @@ public class PlayerLadderState : PlayerStateBase
         }
     }
 
-    public void SetLadder(Ladder ladder)
+    public void SetLadder(Ladder ladder, bool startFromBottom)
     {
         this.ladder = ladder;
 
         mStepPositions = ladder.GetStepPositions();
-        mCurrentStepNum = 0;
+        // mCurrentStepNum = 0;
 
-        Vector3 position = mController.Movement.Position;
-        mController.Movement.SetPosition(position.x, mStepPositions[mCurrentStepNum].y, position.z);
+        if(startFromBottom)
+        {
+            // Step
+            mCurrentStepNum = 0;
+            mTopStepNum = (mStepPositions.Count - 1) - 6;
+
+            // IK
+            mLeftHandStepNum = 5;
+            mRightHandStepNum = 5;
+            mLeftHandIKWeight = 1f;
+            mRightHandIKWeight = 1f;
+
+            Vector3 position = mController.Movement.Position;
+            mController.Movement.SetPosition(position.x, mStepPositions[mCurrentStepNum].y, position.z);
+        }
+        else
+        {
+            mLadderDirection = mController.Movement.OppositeDirection;
+
+            // Step
+            mCurrentStepNum = (mStepPositions.Count - 1) - 5;
+            mTopStepNum = (mStepPositions.Count - 1) - 5;
+
+            // IK
+            mLeftHandStepNum = (mStepPositions.Count - 1);
+            mRightHandStepNum = (mStepPositions.Count - 1);
+            mLeftHandIKWeight = 1f;
+            mRightHandIKWeight = 1f;
+
+            mController.Animator.SetLadderTop(true);
+        }
+
     }
 
     public void EndToPlatform()
@@ -259,12 +321,17 @@ public class PlayerLadderState : PlayerStateBase
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
-        Vector3 position = mController.Movement.Position + Vector3.up * _topCheckOffsetY;
-        Gizmos.DrawWireSphere(_trTopCheck.position, _topCheckRadius);
+        //if (mController.StateMachine.CurrentState != PlayerStateMachine.EState.Ladder)
+        //{
+        //    return;
+        //}
 
-        Gizmos.DrawWireSphere(mStepPositions[mCurrentStepNum], .1f);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(mStepPositions[mCurrentStepNum + 6], .1f);
+        //Gizmos.color = Color.red;
+        //Vector3 position = mController.Movement.Position + Vector3.up * _topCheckOffsetY;
+        //Gizmos.DrawWireSphere(_trTopCheck.position, _topCheckRadius);
+
+        //Gizmos.DrawWireSphere(mStepPositions[mCurrentStepNum], .1f);
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawWireSphere(mStepPositions[mCurrentStepNum + 6], .1f);
     }
 }

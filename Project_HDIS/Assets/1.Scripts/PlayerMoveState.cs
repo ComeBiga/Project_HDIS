@@ -87,6 +87,9 @@ public class PlayerMoveState : PlayerStateBase
 
         mPreviousForward = currentForward;
 
+        // Rotate
+        mController.Movement.UpdateRotation();
+
         // Jump
         if (mController.InputHandler.JumpPressed)
         {
@@ -118,14 +121,33 @@ public class PlayerMoveState : PlayerStateBase
         }
 
         // Ladder
-        if (mController.CheckLadderObject(out Collider collider))
+        if (mController.CheckLadderObject(out Collider[] ladderColliders))
         {
-            if (mController.InputHandler.MoveInput.y > .1f)
+            foreach (Collider ladderCollider in ladderColliders)
             {
-                PlayerStateBase ladderStateBase = mController.StateMachine.SwitchState(PlayerStateMachine.EState.Ladder);
+                if (mController.InputHandler.MoveInput.y > .1f)
+                {
+                    if(ladderCollider.tag == "LadderTop")
+                        continue;
 
-                Ladder ladder = collider.GetComponent<Ladder>();
-                (ladderStateBase as PlayerLadderState).SetLadder(ladder);
+                    PlayerLadderState ladderStateBase = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.Ladder) as PlayerLadderState;
+                    Ladder ladder = ladderCollider.GetComponent<Ladder>();
+                    ladderStateBase.SetLadder(ladder, startFromBottom : true);
+
+                    mController.StateMachine.SwitchState(PlayerStateMachine.EState.Ladder);
+
+                }
+                else if (mController.InputHandler.MoveInput.y < -.1f)
+                {
+                    if(ladderCollider.tag != "LadderTop")
+                        continue;
+
+                    PlayerLadderState ladderStateBase = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.Ladder) as PlayerLadderState;
+                    Ladder ladder = ladderCollider.GetComponentInParent<Ladder>();
+                    ladderStateBase.SetLadder(ladder, startFromBottom: false);
+
+                    mController.StateMachine.SwitchState(PlayerStateMachine.EState.Ladder);
+                }
             }
         }
     }

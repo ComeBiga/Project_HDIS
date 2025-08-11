@@ -24,14 +24,14 @@ public class PlayerController : MonoBehaviour
     private bool mbPushPull = false;
     private PushPullObject mPushPullObject;
 
-    public bool CheckLadderObject(out Collider collider)
+    public bool CheckLadderObject(out Collider[] collider)
     {
         //Collider[] ladderColliders = Physics.OverlapSphere(_trPushPullOrigin.position, _pushPullRange, _pushPullLayer);
         Collider[] ladderColliders = Physics.OverlapSphere(_trPushPullOrigin.position, _pushPullRange, LayerMask.GetMask("Ladder"));
 
         if (ladderColliders.Length > 0)
         {
-            collider = ladderColliders[0];
+            collider = ladderColliders;
             // pushPullObject = pushPullColliders[0].GetComponent<PushPullObject>();
             return true;
         }
