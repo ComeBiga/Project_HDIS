@@ -8,7 +8,7 @@ public abstract class PlayerStateBase : MonoBehaviour
 
     protected PlayerController mController;
 
-    public void Initialize(PlayerController controller)
+    public virtual void Initialize(PlayerController controller)
     {
         mController = controller;
     }
