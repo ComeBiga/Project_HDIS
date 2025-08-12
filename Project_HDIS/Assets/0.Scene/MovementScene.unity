@@ -1074,7 +1074,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 1163701569}
   _trPushPullOrigin: {fileID: 1591092095}
-  _pushPullRange: 1
+  _pushPullRange: 0.3
   _pushPullLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -1146,7 +1146,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 3
   _startHeight: 0.2
-  _endToPlatformXSpeed: 2
+  _distanceToCharacter: 0.3
+  _endToPlatformXSpeed: 3
+  _startClimbDownXOffset: 0
+  _startClimbDownXSpeed: 5
   _startClimbDownYSpeed: 2
   _rotationSpeed: 1.5
 --- !u!1001 &997490438
@@ -1783,8 +1786,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.3, y: 0.5, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.3, y: 0.5, z: 0.314092}
+  m_Center: {x: -1.317034e-16, y: 0, z: 0.05323218}
 --- !u!1 &1447078458
 GameObject:
   m_ObjectHideFlags: 3

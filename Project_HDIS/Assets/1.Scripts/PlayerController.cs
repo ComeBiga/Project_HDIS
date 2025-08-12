@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     public bool CheckLadderObject(out Collider[] collider)
     {
         //Collider[] ladderColliders = Physics.OverlapSphere(_trPushPullOrigin.position, _pushPullRange, _pushPullLayer);
-        Collider[] ladderColliders = Physics.OverlapSphere(_trPushPullOrigin.position, _pushPullRange, LayerMask.GetMask("Ladder"));
+        Collider[] ladderColliders = Physics.OverlapSphere(transform.position, .5f, LayerMask.GetMask("Ladder"));
 
         if (ladderColliders.Length > 0)
         {

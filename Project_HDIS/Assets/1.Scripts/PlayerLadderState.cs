@@ -2,6 +2,7 @@ using PropMaker;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class PlayerLadderState : PlayerStateBase
 {
@@ -11,7 +12,12 @@ public class PlayerLadderState : PlayerStateBase
     private int TopStepIndex => mStepPositions.Count - 1;
 
     [SerializeField] private float _startHeight = .2f;
+    [SerializeField] private float _distanceToCharacter = .2f;
+    [Header("End To Platform")]
     [SerializeField] private float _endToPlatformXSpeed = 2f;
+    [Header("Start Climb Down")]
+    [SerializeField] private float _startClimbDownXOffset = .2f;
+    [SerializeField] private float _startClimbDownXSpeed = 2f;
     [SerializeField] private float _startClimbDownYSpeed = 1.5f;
     [SerializeField] private float _rotationSpeed = 2f;
 
@@ -157,7 +163,7 @@ public class PlayerLadderState : PlayerStateBase
             // Start Climb Up 애니메이션 없이 시작하기 때문에 위치 즉시 설정
             // 자연스러움을 위해서는 Lerp 처리하던지 해야함
             Vector3 position = mController.Movement.Position;
-            mController.Movement.SetPosition(position.x, mStepPositions[mCurrentStepIndex].y, position.z);
+            mController.Movement.SetPosition(mStepPositions[mCurrentStepIndex].x - _distanceToCharacter, mStepPositions[mCurrentStepIndex].y, position.z);
         }
         else
         {
@@ -169,8 +175,8 @@ public class PlayerLadderState : PlayerStateBase
             // IK
             mLeftHandStepNum = mCurrentStepIndex + DISTANCE_FOOT_TO_HAND_DEFAULT;
             mRightHandStepNum = mCurrentStepIndex + DISTANCE_FOOT_TO_HAND_DEFAULT;
-            mLeftHandIKWeight = 1f;
-            mRightHandIKWeight = 1f;
+            mLeftHandIKWeight = 0f;
+            mRightHandIKWeight = 0f;
 
             // Start Climb Down 애니메이션 후 위치 설정하기 때문에 LadderTop만 true로 줌
             mController.Animator.SetLadderTop(true);
@@ -194,6 +200,8 @@ public class PlayerLadderState : PlayerStateBase
 
             yield return null;
         }
+
+        // mbActiveIK = true;
 
         while (true)
         {
@@ -262,14 +270,14 @@ public class PlayerLadderState : PlayerStateBase
                 // if (mCurrentStepNum % 2 == 0)
                 if (mbIsHandDefault)
                 {
-                    Vector3 topPos = transform.position;
-                    topPos.y = mStepPositions[mCurrentStepIndex].y;
-                    transform.position = topPos;
+                    //Vector3 topPos = transform.position;
+                    //topPos.y = mStepPositions[mCurrentStepIndex].y;
+                    //transform.position = topPos;
                 }
 
                 mbLadderTop = true;
-                mbActiveIK = false;
-                mController.Animator.SetLadderTop(true);
+                // mbActiveIK = false;
+                // mController.Animator.SetLadderTop(true);
 
                 StartCoroutine(eEndToPlatform());
 
@@ -332,7 +340,54 @@ public class PlayerLadderState : PlayerStateBase
 
     private IEnumerator eEndToPlatform()
     {
-        while(mbLadderTop)
+        float topYPos = mStepPositions[mCurrentStepIndex].y;
+
+        // Top에 도착했을 때 손 위치에 따라 처리해주는 코드인데
+        // 복잡해질 거 생각하면 사다리 자체에 Step 수를 짝수든 홀수든 고정해주는 방향으로 해도될 듯
+        // if (mCurrentStepNum % 2 == 0)
+        if (mbIsHandDefault)
+        {
+            while (true)
+            {
+                AnimatorStateInfo animatorStateInfo = mAnimator.GetCurrentAnimatorStateInfo(0);
+
+                mController.Animator.SetVertical(mClimbMultiplier);
+
+                // 현재 위치가 다음 Step 위치가 되기 전까지 deltaPosition 처리
+                if (mClimbType == EClimbType.ClimbUp && transform.position.y < mStepPositions[mCurrentStepIndex].y)
+                {
+                    transform.position += mController.Animator.Animator.deltaPosition;
+                }
+
+                // Hand IK Weight를 자연스럽게 0부터 1까지 계산
+                if (mClimbType == EClimbType.ClimbUp)
+                {
+                    if (mCurrentStepIndex % 2 == 0)
+                    {
+                        // 한 Step이 normalizedTime으로 .5f이기 때문에 분모를 .5로 계산
+                        mRightHandIKWeight = (.5f - (mStepNormalizedTime - animatorStateInfo.normalizedTime)) / .5f;
+                    }
+                    else
+                    {
+                        mLeftHandIKWeight = (.5f - (mStepNormalizedTime - animatorStateInfo.normalizedTime)) / .5f;
+                    }
+                }
+
+                // normalizedTime이 한 스텝만큼 변화하면 Idle로 전환
+                if (mClimbType == EClimbType.ClimbUp && animatorStateInfo.normalizedTime > mStepNormalizedTime)
+                {
+                    mController.Animator.SetVertical(0f);
+                    break;
+                }
+
+                yield return null;
+            }
+        }
+
+        mbActiveIK = false;
+        mController.Animator.SetLadderTop(true);
+
+        while (mbLadderTop)
         {
             AnimatorStateInfo animatorStateInfo = mAnimator.GetCurrentAnimatorStateInfo(0);
 
@@ -362,7 +417,11 @@ public class PlayerLadderState : PlayerStateBase
         // LadderTop을 통해서 이미 애니메이션이 실행됐기 때문에 False 처리
         mController.Animator.SetLadderTop(false);
 
-        while(true)
+        // 사다리와 일정한 거리 유지를 위해 위치 조정
+        Vector3 position = mController.Movement.Position;
+        mController.Movement.SetPosition(position.x - _startClimbDownXOffset, position.y, position.z);
+
+        while (true)
         {
             AnimatorStateInfo animatorStateInfo = mAnimator.GetCurrentAnimatorStateInfo(0);
 
@@ -373,28 +432,35 @@ public class PlayerLadderState : PlayerStateBase
             // deltaPosition
             Vector3 deltaPosition = mController.Animator.Animator.deltaPosition;
             // 일정 위치까지 이동 시키기 위해서 일정 위치 전 까지는 deltaPosition을 배수 처리
-            deltaPosition.x *= (transform.position.x > mStepPositions[mCurrentStepIndex].x - .5f) ? 2f : 0f;
+            deltaPosition.x *= (transform.position.x > mStepPositions[mCurrentStepIndex].x - _distanceToCharacter) ? _startClimbDownXSpeed : 0f;
             if (animatorStateInfo.normalizedTime > .6f)
                 deltaPosition.y *= (transform.position.y > mStepPositions[mCurrentStepIndex].y) ? _startClimbDownYSpeed : 0f;
             deltaPosition.z = 0f;
             transform.position += deltaPosition;
 
             // deltaRotation
-            // 현재 방향에서 반대 방향까지 애니메이션 normalizedTime에 맞춰서 회전
-            //mController.Movement.RotateTo(mPreviousDirection,
-            //                            mLadderDirection,
-            //                            animatorStateInfo.normalizedTime);
-            Vector3 eulerAngles = mController.Animator.Animator.deltaRotation.eulerAngles;
-            eulerAngles.y *= _rotationSpeed;
-            mRotatedAngles += eulerAngles.y;
-            if (Mathf.Abs(mRotatedAngles) < 180f)
+            if(mPreviousDirection != mLadderDirection)
             {
-                transform.rotation *= Quaternion.Euler(eulerAngles);
+                // 현재 방향에서 반대 방향까지 애니메이션 normalizedTime에 맞춰서 회전
+                //mController.Movement.RotateTo(mPreviousDirection,
+                //                            mLadderDirection,
+                //                            animatorStateInfo.normalizedTime);
+                Vector3 eulerAngles = mController.Animator.Animator.deltaRotation.eulerAngles;
+                eulerAngles.y *= _rotationSpeed;
+                mRotatedAngles += eulerAngles.y;
+                if (Mathf.Abs(mRotatedAngles) < 180f)
+                {
+                    transform.rotation *= Quaternion.Euler(eulerAngles);
+                }
+                else
+                {
+                    transform.rotation = mController.Movement.DirectionToRotation(mLadderDirection);
+                }
             }
-            else
-            {
-                transform.rotation = mController.Movement.DirectionToRotation(mLadderDirection);
-            }
+
+            // IK
+            mLeftHandIKWeight = animatorStateInfo.normalizedTime;
+            mRightHandIKWeight = animatorStateInfo.normalizedTime;
 
             yield return null;
         }
@@ -429,5 +495,19 @@ public class PlayerLadderState : PlayerStateBase
         //Gizmos.DrawWireSphere(mStepPositions[mCurrentStepNum], .1f);
         //Gizmos.color = Color.blue;
         //Gizmos.DrawWireSphere(mStepPositions[mCurrentStepNum + 6], .1f);
+
+        if(mStepPositions != null && mStepPositions.Count > 0)
+        {
+            Gizmos.color = Color.blue;
+            Vector3 pos = mStepPositions[mStepPositions.Count - 1];
+            pos.x = pos.x - _distanceToCharacter;
+            Gizmos.DrawWireSphere(pos, .1f);
+            pos.x = pos.x + _distanceToCharacter;
+            Gizmos.DrawWireSphere(pos, .1f);
+            pos.x = pos.x + _distanceToCharacter;
+            Gizmos.DrawWireSphere(pos, .1f);
+        }
+
+        Gizmos.DrawWireSphere(transform.position, .3f);
     }
 }
