@@ -33,22 +33,12 @@ public class PlayerMoveState : PlayerStateBase
         {
             EDirection targetDirection = mController.InputHandler.MoveInput.x > 0f ? EDirection.Right : EDirection.Left;
 
+            // 키 입력 방향과 현재 방향이 다르면 방향 전환
             if (targetDirection != mController.Movement.Direction)
             {
                 mbDirectionChanged = true;
-                // AnimatorController를 새로 구성하고 사용되지 않는 Parameter
-                mController.Animator.Turning(true);
+                mController.Movement.SetDirection(targetDirection);
             }
-            else
-            {
-                // 방향이 바뀌기 시작하는 프레임에 transition condition 구분을 주려고
-                // if-else로 나눈 거 같은데 지금은 영향이 없는 듯하다
-                // 그리고 지금 애초에 사용되지 않는 Parameter
-                mController.Animator.SetHorizontal(mController.InputHandler.MoveInput.x);
-            }
-
-            // 방향이 바뀔 때 한 번 설정해주면 되기 때문에 이 라인도 if문 안에 넣어주면 될 듯 하다
-            mController.Movement.SetDirection(targetDirection);
         }
 
         // Turn CW/CCW
@@ -63,7 +53,6 @@ public class PlayerMoveState : PlayerStateBase
             {
                 mController.Animator.TurnL(true);
                 mController.Animator.TurnR(false);
-                // mController.Animator.Turning(false);
                 mbDirectionChanged = false;
 
                 // 회전 각도가 있으면 회전이라고 의도를 갖게 되는데
@@ -75,7 +64,6 @@ public class PlayerMoveState : PlayerStateBase
             {
                 mController.Animator.TurnL(false);
                 mController.Animator.TurnR(true);
-                // mController.Animator.Turning(false);
                 mbDirectionChanged = false;
                 mbRotating = true;
             }
@@ -147,7 +135,6 @@ public class PlayerMoveState : PlayerStateBase
                     mController.StateMachine.SwitchState(PlayerStateMachine.EState.Ladder);
                 }
             }
-
         }
     }
 }
