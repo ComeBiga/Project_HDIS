@@ -113,6 +113,16 @@ public class PlayerMovement : MonoBehaviour
         return targetRotation;
     }
 
+    public static int RotationToDirection(Quaternion rotation)
+    {
+        if (Mathf.Approximately(rotation.eulerAngles.y, 90f))
+            return 1;
+        else if (Mathf.Approximately(rotation.eulerAngles.y, -90f))
+            return -1;
+        else
+            return 0;
+    }
+
     public void PushPull(Vector2 moveInput, float speed)
     {
         Vector3 velocity = mRigidbody.velocity;

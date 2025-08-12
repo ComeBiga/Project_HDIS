@@ -125,30 +125,36 @@ public class PlayerMoveState : PlayerStateBase
         {
             foreach (Collider ladderCollider in ladderColliders)
             {
+                // Bottom
                 if (mController.InputHandler.MoveInput.y > .1f)
                 {
-                    if(ladderCollider.tag == "LadderTop")
+                    if (ladderCollider.tag == "LadderTop")
                         continue;
 
                     PlayerLadderState ladderStateBase = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.Ladder) as PlayerLadderState;
-                    Ladder ladder = ladderCollider.GetComponent<Ladder>();
-                    ladderStateBase.SetLadder(ladder, startFromBottom : true);
+                    LadderHandler ladderHandler = ladderCollider.GetComponent<LadderHandler>();
+
+                    if (ladderStateBase.IsOverRange(ladderHandler))
+                        continue;
+
+                    ladderStateBase.SetLadder(ladderHandler, startFromBottom : true);
 
                     mController.StateMachine.SwitchState(PlayerStateMachine.EState.Ladder);
-
                 }
+                // Top
                 else if (mController.InputHandler.MoveInput.y < -.1f)
                 {
-                    if(ladderCollider.tag != "LadderTop")
+                    if (ladderCollider.tag != "LadderTop")
                         continue;
 
                     PlayerLadderState ladderStateBase = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.Ladder) as PlayerLadderState;
-                    Ladder ladder = ladderCollider.GetComponentInParent<Ladder>();
-                    ladderStateBase.SetLadder(ladder, startFromBottom: false);
+                    LadderHandler ladderHandler = ladderCollider.GetComponentInParent<LadderHandler>();
+                    ladderStateBase.SetLadder(ladderHandler, startFromBottom: false);
 
                     mController.StateMachine.SwitchState(PlayerStateMachine.EState.Ladder);
                 }
             }
+
         }
     }
 }

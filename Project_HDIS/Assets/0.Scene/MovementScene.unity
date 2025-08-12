@@ -1090,6 +1090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6bb273e4ea325438a77d242c313e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreUpdateRotation: 0
   _moveSpeed: 5
   _rotateSpeed: 10
   _jumpForce: 4
@@ -1144,16 +1145,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 3
-  ladder: {fileID: 0}
-  _climbSpeed: 2
   _startHeight: 0.2
-  _groundCheckDisableDuration: 0.2
-  _trTopCheck: {fileID: 1443389884}
-  _topCheckOffsetY: 1
-  _topCheckRadius: 0.2
-  _topCheckLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  _endToPlatformXSpeed: 2
+  _startClimbDownYSpeed: 2
+  _rotationSpeed: 1.5
 --- !u!1001 &997490438
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1568,6 +1563,7 @@ GameObject:
   - component: {fileID: 1387912866}
   - component: {fileID: 1387912870}
   - component: {fileID: 1387912865}
+  - component: {fileID: 1387912871}
   m_Layer: 8
   m_Name: Ladder
   m_TagString: Untagged
@@ -1724,6 +1720,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.49000013, y: 7.4489956, z: 0.090000026}
   m_Center: {x: -1.9539949e-16, y: -0.23519683, z: -0.04500001}
+--- !u!114 &1387912871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387912864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d4a95253cac7da428cc3308f08feb0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1429540333
 GameObject:
   m_ObjectHideFlags: 0
@@ -1777,12 +1785,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.3, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!4 &1443389884 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 679898749880853149, guid: 17f3cfe4d6c92b145a7b36290ba715df,
-    type: 3}
-  m_PrefabInstance: {fileID: 909117991}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1447078458
 GameObject:
   m_ObjectHideFlags: 3
@@ -1920,6 +1922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6bb273e4ea325438a77d242c313e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreUpdateRotation: 0
   _moveSpeed: 5
   _rotateSpeed: 10
   _jumpForce: 5
@@ -2721,6 +2724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6bb273e4ea325438a77d242c313e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreUpdateRotation: 0
   _moveSpeed: 5
   _rotateSpeed: 10
   _jumpForce: 5
