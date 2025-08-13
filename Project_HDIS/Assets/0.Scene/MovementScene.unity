@@ -988,10 +988,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 989947714}
-    - targetCorrespondingSourceObject: {fileID: 417969324499527791, guid: 17f3cfe4d6c92b145a7b36290ba715df,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 989947693}
     - targetCorrespondingSourceObject: {fileID: 2409222817980121250, guid: 17f3cfe4d6c92b145a7b36290ba715df,
         type: 3}
       insertIndex: -1
@@ -1007,19 +1003,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 909117991}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &989947693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 989947692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a952477a966fb1145a146ce48decfde8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 0
 --- !u!114 &989947694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1072,10 +1055,6 @@ MonoBehaviour:
   - {fileID: 989947708}
   - {fileID: 989947711}
   - {fileID: 989947714}
-  _moveState: {fileID: 989947695}
-  _jumpState: {fileID: 989947694}
-  _runJumpState: {fileID: 989947705}
-  _changeDirectionState: {fileID: 989947693}
 --- !u!114 &989947697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2031,10 +2010,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _states: []
-  _moveState: {fileID: 1660668831}
-  _jumpState: {fileID: 1660668833}
-  _runJumpState: {fileID: 0}
-  _changeDirectionState: {fileID: 1660668834}
 --- !u!114 &1660668833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2062,6 +2037,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 0
+  mController: {fileID: 0}
+  rotationCount: 0
+  targetDirection: 0
 --- !u!1 &1754586270
 GameObject:
   m_ObjectHideFlags: 0
