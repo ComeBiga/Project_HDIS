@@ -6,10 +6,12 @@ using UnityEngine;
 public class PushPullObject : MonoBehaviour
 {
     public float PushPullSpeed => _pushPullSpeed;
+    public BoxCollider BoxCollider => mBoxCollider;
 
     [SerializeField] private float _pushPullSpeed = 1f;
 
     private Rigidbody mRigidbody;
+    private BoxCollider mBoxCollider;
 
     public void PushPull(Vector3 velocity)
     {
@@ -20,5 +22,6 @@ public class PushPullObject : MonoBehaviour
     void Start()
     {
         mRigidbody = GetComponent<Rigidbody>();
+        mBoxCollider = GetComponent<BoxCollider>();
     }
 }

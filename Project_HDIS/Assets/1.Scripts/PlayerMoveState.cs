@@ -1,14 +1,22 @@
 using PropMaker;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using static PlayerMovement;
 
 public class PlayerMoveState : PlayerStateBase
 {
+    [Header("PushPull")]
+    [SerializeField] private Transform _trPushPullOrigin;
+    [SerializeField] private float _pushPullRadius;
+    [SerializeField] private LayerMask _pushPullLayer;
+    [SerializeField] private float _pushPullZDistance;
+
     private Vector3 mPreviousForward;       // 회전을 시작하면 어느 방향으로 도는지 체크해야되기 때문에 이전 방향을 저장
     private bool mbDirectionChanged = false;
     private bool mbRotating = false;        // 현재 사용되는 곳은 없지만 회전을 체크하는 변수이기 때문에 유지
+    private PushPullObject mPushPullObject = null;
 
     public override void EnterState()
     {
@@ -136,5 +144,77 @@ public class PlayerMoveState : PlayerStateBase
                 }
             }
         }
+
+        // PushPull
+        if(checkPushPullObject(out PushPullObject[] pushPullObjects))
+        {
+            PushPullObject pushPullObject = pushPullObjects[0];
+            mPushPullObject = pushPullObject;
+            Bounds pushPullObjectBounds = pushPullObject.BoxCollider.bounds;
+            Vector3 characterPos = transform.position;
+
+            float distanceToPPO = 0f;
+
+            if(characterPos.x < pushPullObjectBounds.min.x)
+            {
+                distanceToPPO = pushPullObjectBounds.min.x - characterPos.x;
+
+                characterPos.z = -((_pushPullRadius - distanceToPPO) / _pushPullRadius) *_pushPullZDistance;
+                transform.position = characterPos;
+            }
+            else if(characterPos.x > pushPullObjectBounds.max.x)
+            {
+                distanceToPPO = characterPos.x - pushPullObjectBounds.max.x;
+
+                characterPos.z = -((_pushPullRadius - distanceToPPO) / _pushPullRadius) * _pushPullZDistance;
+                transform.position = characterPos;
+            }
+            else
+            {
+                distanceToPPO = characterPos.z - pushPullObjectBounds.min.z;
+
+                // PushPull
+                if (distanceToPPO < _pushPullZDistance && mController.InputHandler.IsInteracting)
+                {
+                    PlayerPushPullState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.PushPull) as PlayerPushPullState;
+                    pushPullState.SetPushPullObject(pushPullObjects[0]);
+                    mController.StateMachine.SwitchState(PlayerStateMachine.EState.PushPull);
+                }
+            }
+
+            // Climb Object
+            if (mController.InputHandler.MoveInput.y > .1f)
+            {
+                PlayerClimbObjectState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.ClimbObject) as PlayerClimbObjectState;
+                pushPullState.SetClimbObject(pushPullObjects[0]);
+                mController.StateMachine.SwitchState(PlayerStateMachine.EState.ClimbObject);
+            }
+        }
+    }
+
+    private bool checkPushPullObject(out PushPullObject[] pushPullObjects)
+    {
+        Collider[] pushPullColliders = Physics.OverlapSphere(_trPushPullOrigin.position, _pushPullRadius, _pushPullLayer);
+
+        if (pushPullColliders.Length > 0)
+        {
+            pushPullObjects = new PushPullObject[pushPullColliders.Length];
+
+            for(int i = 0; i < pushPullColliders.Length; ++i)
+            {
+                pushPullObjects[i] = pushPullColliders[i].GetComponent<PushPullObject>();
+            }
+
+            return true;
+        }
+
+        pushPullObjects = null;
+        return false;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        // Gizmos.DrawWireSphere(_trPushPullOrigin.position, _pushPullRadius);
     }
 }

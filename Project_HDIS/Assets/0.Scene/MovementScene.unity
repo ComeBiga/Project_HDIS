@@ -983,6 +983,14 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 417969324499527791, guid: 17f3cfe4d6c92b145a7b36290ba715df,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 989947711}
+    - targetCorrespondingSourceObject: {fileID: 417969324499527791, guid: 17f3cfe4d6c92b145a7b36290ba715df,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 989947714}
+    - targetCorrespondingSourceObject: {fileID: 417969324499527791, guid: 17f3cfe4d6c92b145a7b36290ba715df,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 989947693}
     - targetCorrespondingSourceObject: {fileID: 2409222817980121250, guid: 17f3cfe4d6c92b145a7b36290ba715df,
         type: 3}
@@ -1039,6 +1047,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 0
+  _trPushPullOrigin: {fileID: 1591092095}
+  _pushPullRadius: 1
+  _pushPullLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  _pushPullZDistance: 0.6
 --- !u!114 &989947696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1056,6 +1070,8 @@ MonoBehaviour:
   - {fileID: 989947694}
   - {fileID: 989947705}
   - {fileID: 989947708}
+  - {fileID: 989947711}
+  - {fileID: 989947714}
   _moveState: {fileID: 989947695}
   _jumpState: {fileID: 989947694}
   _runJumpState: {fileID: 989947705}
@@ -1152,6 +1168,35 @@ MonoBehaviour:
   _startClimbDownXSpeed: 5
   _startClimbDownYSpeed: 2
   _rotationSpeed: 1.5
+--- !u!114 &989947711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989947692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3af3ce23eb314e4784e044069b6cad7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 4
+--- !u!114 &989947714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989947692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac505fd76bc19044b18f0f2709cdb01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 5
+  _climbSpeed: 2
+  _lerpYPosDuration: 0.2
+  _lerpYPosZSpeed: 3
 --- !u!1001 &997490438
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1967,6 +2012,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 0
+  _trPushPullOrigin: {fileID: 0}
+  _pushPullRadius: 0
+  _pushPullLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _pushPullZDistance: 0
 --- !u!114 &1660668832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2434,7 +2485,7 @@ PrefabInstance:
     - target: {fileID: 3881498192213924142, guid: 457671f74abc5d54b9f1eb2851cfe2bb,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.066
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 3881498192213924142, guid: 457671f74abc5d54b9f1eb2851cfe2bb,
         type: 3}
@@ -2479,7 +2530,7 @@ PrefabInstance:
     - target: {fileID: 8929717637861825896, guid: 457671f74abc5d54b9f1eb2851cfe2bb,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

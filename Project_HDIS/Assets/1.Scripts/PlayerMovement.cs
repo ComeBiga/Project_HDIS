@@ -51,7 +51,23 @@ public class PlayerMovement : MonoBehaviour
         velocity.x = moveInput.x * _moveSpeed;
         mRigidbody.velocity = velocity;
     }
+    
+    public void Move(Vector2 moveInput, float speed)
+    {
+        Vector3 velocity = mRigidbody.velocity;
+        velocity.x = moveInput.x * speed;
+        mRigidbody.velocity = velocity;
+    }
 
+    public void MoveDelta(Vector3 deltaPosition)
+    {
+        mRigidbody.MovePosition(transform.position + deltaPosition);
+    }
+
+    public void SetVelocity(Vector3 velocity)
+    {
+        mRigidbody.velocity = velocity;
+    }
     
     public void RotateTo(Quaternion from, EDirection direction, float t)
     {
