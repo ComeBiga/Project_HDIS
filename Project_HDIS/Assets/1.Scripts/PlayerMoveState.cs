@@ -7,6 +7,9 @@ using static PlayerMovement;
 
 public class PlayerMoveState : PlayerStateBase
 {
+    [Header("Ladder")]
+    [SerializeField] private float _ladderRadius = .5f;
+
     [Header("PushPull")]
     [SerializeField] private Transform _trPushPullOrigin;
     [SerializeField] private float _pushPullRadius;
@@ -109,7 +112,7 @@ public class PlayerMoveState : PlayerStateBase
         }
 
         // Ladder
-        if (mController.CheckLadderObject(out Collider[] ladderColliders))
+        if (checkLadderObject(out Collider[] ladderColliders))
         {
             foreach (Collider ladderCollider in ladderColliders)
             {
@@ -190,6 +193,20 @@ public class PlayerMoveState : PlayerStateBase
                 mController.StateMachine.SwitchState(PlayerStateMachine.EState.ClimbObject);
             }
         }
+    }
+
+    private bool checkLadderObject(out Collider[] collider)
+    {
+        Collider[] ladderColliders = Physics.OverlapSphere(transform.position, _ladderRadius, LayerMask.GetMask("Ladder"));
+
+        if (ladderColliders.Length > 0)
+        {
+            collider = ladderColliders;
+            return true;
+        }
+
+        collider = null;
+        return false;
     }
 
     private bool checkPushPullObject(out PushPullObject[] pushPullObjects)
