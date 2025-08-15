@@ -188,8 +188,16 @@ public class PlayerMoveState : PlayerStateBase
             // Climb Object
             if (mController.InputHandler.MoveInput.y > .1f)
             {
+                mController.Animator.SetVertical(1f);
                 PlayerClimbObjectState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.ClimbObject) as PlayerClimbObjectState;
-                pushPullState.SetClimbObject(pushPullObjects[0]);
+                pushPullState.SetClimbObject(pushPullObjects[0], climbUp : true);
+                mController.StateMachine.SwitchState(PlayerStateMachine.EState.ClimbObject);
+            }
+            else if(mController.InputHandler.MoveInput.y < -.1f)
+            {
+                mController.Animator.SetVertical(-1f);
+                PlayerClimbObjectState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.ClimbObject) as PlayerClimbObjectState;
+                pushPullState.SetClimbObject(pushPullObjects[0], climbUp: false);
                 mController.StateMachine.SwitchState(PlayerStateMachine.EState.ClimbObject);
             }
         }
