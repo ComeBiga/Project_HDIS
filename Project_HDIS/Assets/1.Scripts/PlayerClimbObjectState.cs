@@ -5,9 +5,9 @@ using UnityEngine;
 public class PlayerClimbObjectState : PlayerStateBase
 {
     [Header("Climb Up")]
-    // [SerializeField] private float _climbSpeed = 2f;
     [SerializeField] private float _lerpRotationDuration = .2f;     // 이동 방향에서 애니메이션 방향으로 각도 보정해주는 시간
     [SerializeField] private float _lerpYPosDuration = .2f;         // 애니메이션 높이로 보정해주는 시간
+    [SerializeField] private float _climbUpYSpeed = 2f;
     [SerializeField] private float _climbUpZSpeed = 3f;
 
     [Header("Climb Down")]
@@ -59,18 +59,7 @@ public class PlayerClimbObjectState : PlayerStateBase
 
     public override void Tick()
     {
-        //AnimatorStateInfo animatorStateInfo = mAnimator.GetCurrentAnimatorStateInfo(0);
 
-        //if (!animatorStateInfo.IsTag("ClimbObject"))
-        //{
-        //    // mController.StateMachine.SwitchState(PlayerStateMachine.EState.Move);
-        //    return;
-        //}
-
-        //Vector3 deltaPosition = mAnimator.deltaPosition;
-        //deltaPosition.y *= 2f;
-        //deltaPosition.z *= (transform.position.z < 0f) ? _lerpYPosZSpeed : 0f;
-        //transform.position += deltaPosition;
     }
 
     public void SetClimbObject(PushPullObject pushPullObject, bool climbUp)
@@ -78,8 +67,17 @@ public class PlayerClimbObjectState : PlayerStateBase
         mPushPullObject = pushPullObject;
         mbClimbUp = climbUp;
 
-        // 내리기 일 때 어느 방향을 보고 있었는 지는 이 함수에서 해주지만
-        // 오르기 인지 내리기 인지는 PlayerMoveState에서 해주고 있어서 똑같이 이 함수로 옮기면 좋을 듯
+        // 오르기 인지 내리기 인지 AnimatorController에서 체크는 아래 parameter로 한다.
+        if (mbClimbUp)
+        {
+            mController.Animator.SetVertical(1f);
+        }
+        else
+        {
+            mController.Animator.SetVertical(-1f);
+        }
+
+        // 내리기일 때 어느 방향을 보고 있었는 지 AnimatorController에서 체크하는 parameter
         if (mController.Movement.Direction == PlayerMovement.EDirection.Right)
         {
             mController.Animator.SetHorizontal(1f);
@@ -129,7 +127,7 @@ public class PlayerClimbObjectState : PlayerStateBase
             }
 
             Vector3 deltaPosition = mAnimator.deltaPosition;
-            deltaPosition.y *= 2f;                                  // y에 대한 speed도 변수 선언해주기
+            deltaPosition.y *= _climbUpYSpeed;
             // 오브젝트와 반대방향으로 배수처리되지 않게 z가 0보다 작을 때만 배수 처리
             deltaPosition.z *= (transform.position.z < 0f) ? _climbUpZSpeed : 0f;
             transform.position += deltaPosition;
