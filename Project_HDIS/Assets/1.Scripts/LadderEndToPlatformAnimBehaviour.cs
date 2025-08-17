@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChangeDirectionAnimBehaviour : StateMachineBehaviour
+public class LadderEndToPlatformAnimBehaviour : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -22,10 +22,6 @@ public class ChangeDirectionAnimBehaviour : StateMachineBehaviour
         PlayerController controller = animator.GetComponentInParent<PlayerController>();
         var ladderStateBase = controller.StateMachine.GetStateBase(PlayerStateMachine.EState.Ladder);
         (ladderStateBase as PlayerLadderState).EndToPlatform();
-        // controller.StateMachine.SwitchState(PlayerStateMachine.EState.Move);
-        // controller.StateMachine.SwitchState(controller.StateMachine.MoveState);
-
-        // Debug.Log("OnStateExit");
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
