@@ -9,13 +9,7 @@ public class PlayerAnimator : MonoBehaviour
 {
     public Animator Animator => mAnimator;
 
-    // RootMotion은 PlayerAnimator 클래스에서 계산해주지 않아도 되기 때문에
-    // 각각 위치에서 계산하고 있고 지금은 사용되지 않고 있음
-    // public bool enableRootMotion = false;
     public event Action onAnimationIK = null;
-
-    //[SerializeField]
-    //private float _rootMotionSpeed = 1f;    // 지금은 사용되지 않고 있음
 
     private readonly int StateHash = Animator.StringToHash("State");
     private readonly int HorizontalHash = Animator.StringToHash("Horizontal");
@@ -90,15 +84,7 @@ public class PlayerAnimator : MonoBehaviour
     // 계산에 문제가 없도록 남겨둘 필요가 있음
     private void OnAnimatorMove()
     {
-        // RootMotion은 PlayerAnimator 클래스에서 계산해주지 않아도 되기 때문에
-        // 지금은 사용되지 않고 있음
-        //if (mAnimator.applyRootMotion && enableRootMotion)
-        //{
-        //    //transform.position += mAnimator.deltaPosition;
-        //    //transform.rotation *= mAnimator.deltaRotation;
-        //    transform.parent.position += mAnimator.deltaPosition * _rootMotionSpeed;
-        //    transform.parent.rotation *= mAnimator.deltaRotation;
-        //}
+
     }
 
     private void OnAnimatorIK(int layerIndex)
