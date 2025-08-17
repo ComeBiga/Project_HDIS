@@ -16,19 +16,22 @@ public class PlayerController : MonoBehaviour
     private PlayerMovement mMovement;
     private PlayerStateMachine mStateMachine;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         mInputHandler = GetComponent<PlayerInputHandler>();
         mMovement = GetComponent<PlayerMovement>();
-        mMovement.Initialize();
 
         mStateMachine = GetComponent<PlayerStateMachine>();
-        mStateMachine.SwitchState(PlayerStateMachine.EState.Move);
+    }
+
+    private void Start()
+    {
+        mMovement.Initialize();
+        mStateMachine.Initialize();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         mStateMachine.CurrentStateBase.Tick();
 

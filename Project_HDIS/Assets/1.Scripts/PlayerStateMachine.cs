@@ -18,6 +18,16 @@ public class PlayerStateMachine : MonoBehaviour
     private PlayerStateBase mCurrentStateBase;
     private Dictionary<EState, PlayerStateBase> mStateDic = new Dictionary<EState, PlayerStateBase>(10);
 
+    public void Initialize()
+    {
+        foreach (var state in _states)
+        {
+            ResisterState(state);
+        }
+
+        SwitchState(PlayerStateMachine.EState.Move);
+    }
+
     public PlayerStateBase GetStateBase(EState state)
     {
         return mStateDic[state];
@@ -41,13 +51,8 @@ public class PlayerStateMachine : MonoBehaviour
         return mCurrentStateBase;
     }
 
-    private void Start()
+    private void Awake()
     {
         mController = GetComponent<PlayerController>();
-
-        foreach(var state in _states)
-        {
-            ResisterState(state);
-        }
     }
 }
