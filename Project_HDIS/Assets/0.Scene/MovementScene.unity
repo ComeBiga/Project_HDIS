@@ -140,8 +140,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49cb26e02c5e51a4a8ff523cfc26e66f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableRootMotion: 0
-  _rootMotionSpeed: 1
 --- !u!1 &227958733
 GameObject:
   m_ObjectHideFlags: 0
@@ -868,6 +866,11 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 80
       objectReference: {fileID: 0}
+    - target: {fileID: 6691509894113576852, guid: 17f3cfe4d6c92b145a7b36290ba715df,
+        type: 3}
+      propertyPath: _rightHandWeight
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7037788548089159883, guid: 17f3cfe4d6c92b145a7b36290ba715df,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -945,6 +948,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8026512333261763939, guid: 17f3cfe4d6c92b145a7b36290ba715df, type: 3}
+    - {fileID: 6691509894113576852, guid: 17f3cfe4d6c92b145a7b36290ba715df, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -992,10 +996,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1163701569}
-    - targetCorrespondingSourceObject: {fileID: 2409222817980121250, guid: 17f3cfe4d6c92b145a7b36290ba715df,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1163701571}
   m_SourcePrefab: {fileID: 100100000, guid: 17f3cfe4d6c92b145a7b36290ba715df, type: 3}
 --- !u!1 &989947692 stripped
 GameObject:
@@ -1081,7 +1081,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6bb273e4ea325438a77d242c313e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreUpdateRotation: 0
   _moveSpeed: 5
   _rotateSpeed: 10
   _jumpForce: 4
@@ -1139,7 +1138,6 @@ MonoBehaviour:
   _startHeight: 0.2
   _distanceToCharacter: 0.3
   _endToPlatformXSpeed: 3
-  _startClimbDownXOffset: 0
   _startClimbDownXSpeed: 5
   _startClimbDownYSpeed: 2
   _rotationSpeed: 1.5
@@ -1447,31 +1445,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49cb26e02c5e51a4a8ff523cfc26e66f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableRootMotion: 0
-  _rootMotionSpeed: 1
---- !u!114 &1163701571
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1163701568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1284176370f02fc46a319fa977e9cff0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _ikActive: 0
-  _trRightHandTarget: {fileID: 727037108}
-  _rightHandTargetWeight: 0.5
-  _trLeftHandTarget: {fileID: 700140527}
-  _leftHandTargetWeight: 0.5
-  _trRightFootTarget: {fileID: 1754586271}
-  _rightFootTargetWeight: 0.5
-  _trLeftFootTarget: {fileID: 463651974}
-  _leftFootTargetWeight: 0.5
-  _trHintTarget: {fileID: 718107245}
-  _hintTargetWeight: 1
 --- !u!1 &1217287162
 GameObject:
   m_ObjectHideFlags: 0
@@ -1945,7 +1918,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6bb273e4ea325438a77d242c313e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreUpdateRotation: 0
   _moveSpeed: 5
   _rotateSpeed: 10
   _jumpForce: 5
@@ -2744,7 +2716,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6bb273e4ea325438a77d242c313e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreUpdateRotation: 0
   _moveSpeed: 5
   _rotateSpeed: 10
   _jumpForce: 5
@@ -2829,8 +2800,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49cb26e02c5e51a4a8ff523cfc26e66f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableRootMotion: 0
-  _rootMotionSpeed: 1
 --- !u!1001 &7571421115644077038
 PrefabInstance:
   m_ObjectHideFlags: 0
