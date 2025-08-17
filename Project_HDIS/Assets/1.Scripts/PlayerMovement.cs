@@ -185,7 +185,7 @@ public class PlayerMovement : MonoBehaviour
             mGroundCheckDisableTimer -= Time.deltaTime;
             mbIsGrounded = false;
 
-            _animator.SetIsGrounded(mbIsGrounded);
+            // _animator.SetIsGrounded(mbIsGrounded);
         }
         else
         {
@@ -197,7 +197,7 @@ public class PlayerMovement : MonoBehaviour
                 mbJumping = false;
             }
 
-            _animator.SetIsGrounded(mbIsGrounded);
+            // _animator.SetIsGrounded(mbIsGrounded);
         }
     }
 }
