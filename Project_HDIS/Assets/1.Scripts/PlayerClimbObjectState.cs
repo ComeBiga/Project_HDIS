@@ -128,7 +128,7 @@ public class PlayerClimbObjectState : PlayerStateBase
 
             Vector3 deltaPosition = mAnimator.deltaPosition;
             deltaPosition.y *= _climbUpYSpeed;
-            // 오브젝트와 반대방향으로 배수처리되지 않게 z가 0보다 작을 때만 배수 처리
+            // 캐릭터 z 위치가 0까지만 이동하게 조건을 줌
             deltaPosition.z *= (transform.position.z < 0f) ? _climbUpZSpeed : 0f;
             transform.position += deltaPosition;
 
@@ -168,6 +168,10 @@ public class PlayerClimbObjectState : PlayerStateBase
             // 반대방향으로 배수 처리되지 않게 하기 위해 조건을 줌
             deltaPosition.y *= (deltaPosition.y < 0f) ? _climbDownYSpeed : 1f;
             deltaPosition.z *= (deltaPosition.z < 0f) ? _climbDownZSpeed : 1f;
+
+            if (transform.position.z < -.6f)
+                deltaPosition.z = 0f;
+
             transform.position += deltaPosition;
 
             // deltaRotation

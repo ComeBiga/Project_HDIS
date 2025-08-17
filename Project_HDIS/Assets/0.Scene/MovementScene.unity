@@ -1171,11 +1171,12 @@ MonoBehaviour:
   key: 5
   _lerpRotationDuration: 0.2
   _lerpYPosDuration: 0.2
+  _climbUpYSpeed: 2
   _climbUpZSpeed: 3
   _lerpZPosDuration: 0.2
   _climbDownRotateSpeed: 3
   _climbDownYSpeed: 1.5
-  _climbDownZSpeed: 1.5
+  _climbDownZSpeed: 1.8
 --- !u!1001 &997490438
 PrefabInstance:
   m_ObjectHideFlags: 0
