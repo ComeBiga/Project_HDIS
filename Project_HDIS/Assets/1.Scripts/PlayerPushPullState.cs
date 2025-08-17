@@ -16,7 +16,8 @@ public class PlayerPushPullState : PlayerStateBase
 
     public override void EnterState()
     {
-        mController.Movement.PushPull(Vector2.zero, 0f);
+        // mController.Movement.PushPull(Vector2.zero, 0f);
+        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     public override void ExitState()

@@ -30,9 +30,9 @@ public class PlayerClimbObjectState : PlayerStateBase
 
     public override void EnterState()
     {
-        // Gravity랑 Collider 비활성화하려고 호출한 함수
-        // PlayerMovement 코드 정리하면서 같이 정리해줘야 할 듯
-        mController.Movement.StartClimbLadder();
+        mController.Movement.SetVelocity(Vector3.zero);
+        mController.Movement.SetUseGravity(false);
+        mController.Movement.SetColliderActive(false);
         mbClimbing = true;
 
         if (mbClimbUp)
@@ -47,9 +47,8 @@ public class PlayerClimbObjectState : PlayerStateBase
 
     public override void ExitState()
     {
-        // Gravity랑 Collider 비활성화하려고 호출한 함수
-        // PlayerMovement 코드 정리하면서 같이 정리해줘야 할 듯
-        mController.Movement.StopClimbLadder();
+        mController.Movement.SetUseGravity(true);
+        mController.Movement.SetColliderActive(true);
 
         // 내리기일 때 어느 방향을 보고 있었는 지 체크하는 parameter
         mController.Animator.SetHorizontal(0f);

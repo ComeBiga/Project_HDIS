@@ -14,8 +14,6 @@ public class PlayerMovement : MonoBehaviour
 
     public enum EDirection { Left, Right };
 
-    public bool ignoreUpdateRotation = false;   // 현재 사용되지 않음
-
     [Header("Move")]
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _rotateSpeed = 10f;
@@ -59,45 +57,9 @@ public class PlayerMovement : MonoBehaviour
         mRigidbody.velocity = velocity;
     }
 
-    // deltaPosition값을 받아 이동 처리를 하는 함수
-    // 사용하려던 부분을 velocity로 처리하여 지금은 사용하지 않음
-    public void MoveDelta(Vector3 deltaPosition)
-    {
-        mRigidbody.MovePosition(transform.position + deltaPosition);
-    }
-
     public void SetVelocity(Vector3 velocity)
     {
         mRigidbody.velocity = velocity;
-    }
-    
-    // RotateTo 함수는 UpdateRotation과 이름이 다른 함수지만 매개변수를 받아 Update하는 함수임
-    // 매개변수를 통해 목표 방향을 전달받는 방식이 다름
-    public void RotateTo(Quaternion from, EDirection direction, float t)
-    {
-        Quaternion targetRotation = DirectionToRotation(direction);
-
-        mRigidbody.MoveRotation(Quaternion.Lerp(from, targetRotation, t));
-    }
-    
-    public void RotateTo(EDirection fromDirection, EDirection toDirection, float t)
-    {
-        Quaternion fromRotation = DirectionToRotation(fromDirection);
-        Quaternion toRotation = DirectionToRotation(toDirection);
-
-        mRigidbody.MoveRotation(Quaternion.Lerp(fromRotation, toRotation, t));
-    }
-
-    public void RotateTo(EDirection direction, float t)
-    {
-        Quaternion targetRotation = DirectionToRotation(direction);
-
-        mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, t));
-    }
-
-    public void RotateTo(EDirection direction)
-    {
-        RotateTo(direction, Time.deltaTime * _rotateSpeed);
     }
 
     // 현재 방향과 반대 방향으로 변수를 설정하는 함수
@@ -120,6 +82,33 @@ public class PlayerMovement : MonoBehaviour
         Quaternion targetRotation = DirectionToRotation(mDirection);
 
         mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed));
+    }
+
+    public void UpdateRotation(Quaternion from, EDirection direction, float t)
+    {
+        Quaternion targetRotation = DirectionToRotation(direction);
+
+        mRigidbody.MoveRotation(Quaternion.Lerp(from, targetRotation, t));
+    }
+
+    public void UpdateRotation(EDirection fromDirection, EDirection toDirection, float t)
+    {
+        Quaternion fromRotation = DirectionToRotation(fromDirection);
+        Quaternion toRotation = DirectionToRotation(toDirection);
+
+        mRigidbody.MoveRotation(Quaternion.Lerp(fromRotation, toRotation, t));
+    }
+
+    public void UpdateRotation(EDirection direction, float t)
+    {
+        Quaternion targetRotation = DirectionToRotation(direction);
+
+        mRigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, t));
+    }
+
+    public void UpdateRotation(EDirection direction)
+    {
+        UpdateRotation(direction, Time.deltaTime * _rotateSpeed);
     }
 
     // 해당 방향을 나타내는 Quaternion 값을 반환
@@ -151,21 +140,6 @@ public class PlayerMovement : MonoBehaviour
             return 0;
     }
 
-    // PushPull 할 때 캐릭터의 방향과 이동을 처리
-    // 지금은 방향만 한 번 세팅해주고 원래 용도대로 사용되지 않음
-    // 함수를 제거하고 직접 방향을 세팅해주면 될 듯
-    public void PushPull(Vector2 moveInput, float speed)
-    {
-        Vector3 velocity = mRigidbody.velocity;
-        velocity.x = moveInput.x * speed;
-        mRigidbody.velocity = velocity;
-
-        // rotateTowards(Vector3.forward, 0f);
-        mRigidbody.MoveRotation(Quaternion.Euler(0f, 0f, 0f));
-
-        _animator.SetHorizontal(moveInput.x);
-    }
-
     public void Jump()
     {
         if(mbIsGrounded)
@@ -188,64 +162,18 @@ public class PlayerMovement : MonoBehaviour
         mRigidbody.isKinematic = false;
     }
 
-    // 사다리를 탈 때 사용되는 함수
-    // 현재는 애니메이션 RootMotion으로 사다리 이동을 처리하기 때문에
-    // 사용되지 않는 함수
-    public void ClimbLadder(Vector3 moveInput, float climbSpeed)
+    public void SetUseGravity(bool value)
     {
-        Vector3 velocity = mRigidbody.velocity;
-        velocity.y = moveInput.y * climbSpeed;
-        mRigidbody.velocity = velocity;
+        mRigidbody.useGravity = value;
     }
 
-    // 사다리를 탈 때 중력과 Collider를 비활성화 해주는 함수
-    // 사다리 외에 오브젝트 탈 때도 호출되기 때문에 함수명을 변경하던지
-    // Gravity, Collider 각각 나눠서 함수를 선언해야할 듯
-    public void StartClimbLadder()
+    public void SetColliderActive(bool value)
     {
-        mRigidbody.useGravity = false;
-        //mRigidbody.isKinematic = true;
-        mRigidbody.velocity = Vector3.zero;
-        //mRigidbody.isKinematic = false;
-        mCapsuleCollider.enabled = false;
-    }
-
-    public void StopClimbLadder()
-    {
-        mRigidbody.useGravity = true;
-        mRigidbody.isKinematic = false;
-        mCapsuleCollider.enabled = true;
-    }
-
-    // 기존에 오브젝트를 탈 때 사용된 함수
-    // 지금은 RootMotion으로 처리하기 때문에 사용되지 않음
-    public void Climb(Bounds bounds)
-    {
-        //SetPosition(Position.x, bounds.max.y, bounds.min.z + (bounds.size.z / 2f));
-        SetPosition(Position.x, bounds.max.y + .02f, bounds.min.z);
-        mRigidbody.MoveRotation(Quaternion.Euler(0f, 0f, 0f));
-        StopJump();
-
-        _animator.SetClimb();
-    }
-
-    public void ClimbDown()
-    {
-        mRigidbody.MoveRotation(Quaternion.Euler(0f, 180f, 0f));
-        _animator.SetClimbDown();
-    }
-
-    // transform.position을 세팅해주는 함수인데 각 위치에서 직접 세팅해주면 될 듯
-    public void SetPosition(float x, float y, float z)
-    {
-        transform.position = new Vector3(x, y, z);
+        mCapsuleCollider.enabled = value;
     }
 
     public void Tick()
     {
-        // Rotate
-        // updateRotation();
-
         // Check Ground
         checkGround();
     }

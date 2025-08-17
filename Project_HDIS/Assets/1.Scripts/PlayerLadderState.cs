@@ -16,7 +16,6 @@ public class PlayerLadderState : PlayerStateBase
     [Header("End To Platform")]
     [SerializeField] private float _endToPlatformXSpeed = 2f;
     [Header("Start Climb Down")]
-    [SerializeField] private float _startClimbDownXOffset = .2f;
     [SerializeField] private float _startClimbDownXSpeed = 2f;
     [SerializeField] private float _startClimbDownYSpeed = 1.5f;
     [SerializeField] private float _rotationSpeed = 2f;
@@ -61,7 +60,9 @@ public class PlayerLadderState : PlayerStateBase
 
     public override void EnterState()
     {
-        mController.Movement.StartClimbLadder();
+        mController.Movement.SetVelocity(Vector3.zero);
+        mController.Movement.SetUseGravity(false);
+        mController.Movement.SetColliderActive(false);
         // mController.Animator.SetLadderTop(false);        // 맨 위에서 시작 시 LadderTop과 함께 시작함
 
         // Top에서 시작 시 어떤 값으로 시작하는 지 확인할 필요 있음
@@ -89,7 +90,8 @@ public class PlayerLadderState : PlayerStateBase
 
     public override void ExitState()
     {
-        mController.Movement.StopClimbLadder();
+        mController.Movement.SetUseGravity(true);
+        mController.Movement.SetColliderActive(true);
         mController.Animator.SetLadderTop(false);
 
         mbActiveIK = false;
@@ -163,7 +165,10 @@ public class PlayerLadderState : PlayerStateBase
             // Start Climb Up 애니메이션 없이 시작하기 때문에 위치 즉시 설정
             // 자연스러움을 위해서는 Lerp 처리하던지 해야함
             Vector3 position = mController.Movement.Position;
-            mController.Movement.SetPosition(mStepPositions[mCurrentStepIndex].x - _distanceToCharacter, mStepPositions[mCurrentStepIndex].y, position.z);
+            position.x = mStepPositions[mCurrentStepIndex].x - _distanceToCharacter;
+            position.y = mStepPositions[mCurrentStepIndex].y;
+            transform.position = position;
+            // mController.Movement.SetPosition(mStepPositions[mCurrentStepIndex].x - _distanceToCharacter, mStepPositions[mCurrentStepIndex].y, position.z);
         }
         else
         {
@@ -416,10 +421,6 @@ public class PlayerLadderState : PlayerStateBase
 
         // LadderTop을 통해서 이미 애니메이션이 실행됐기 때문에 False 처리
         mController.Animator.SetLadderTop(false);
-
-        // 사다리와 일정한 거리 유지를 위해 위치 조정
-        Vector3 position = mController.Movement.Position;
-        mController.Movement.SetPosition(position.x - _startClimbDownXOffset, position.y, position.z);
 
         while (true)
         {
