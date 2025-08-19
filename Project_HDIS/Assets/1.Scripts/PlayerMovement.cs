@@ -129,12 +129,14 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // Quaternion 값으로부터 방향을 반환
-    // 1 : right(90), -1 : left(-90), 0 : 그 외
+    // 1 : right(90), -1 : left(-90, 270), 0 : 그 외
     public static int RotationToDirection(Quaternion rotation)
     {
         if (Mathf.Approximately(rotation.eulerAngles.y, 90f))
             return 1;
         else if (Mathf.Approximately(rotation.eulerAngles.y, -90f))
+            return -1;
+        else if (Mathf.Approximately(rotation.eulerAngles.y, 270f))
             return -1;
         else
             return 0;

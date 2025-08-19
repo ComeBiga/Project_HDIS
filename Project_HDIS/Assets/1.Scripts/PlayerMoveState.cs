@@ -15,11 +15,14 @@ public class PlayerMoveState : PlayerStateBase
     [SerializeField] private float _pushPullRadius;
     [SerializeField] private LayerMask _pushPullLayer;
     [SerializeField] private float _pushPullZDistance;
+    [SerializeField] private float _pushPullPassByZSpeed = 2f;
 
     private Vector3 mPreviousForward;       // 회전을 시작하면 어느 방향으로 도는지 체크해야되기 때문에 이전 방향을 저장
     private bool mbDirectionChanged = false;
     private bool mbRotating = false;        // 현재 사용되는 곳은 없지만 회전을 체크하는 변수이기 때문에 유지
     private PushPullObject mPushPullObject = null;
+
+    private bool mbCheckPushPullObject = false;
 
     public override void EnterState()
     {
@@ -148,55 +151,80 @@ public class PlayerMoveState : PlayerStateBase
             }
         }
 
-        // PushPull
+        //// Check PushPull Object
+        //if(!mbCheckPushPullObject)
+        //{
+        //    if (checkPushPullObject(out PushPullObject[] pushPullObjects))
+        //    { 
+        //        mbCheckPushPullObject = true;
+        //        mPushPullObject = pushPullObjects[0];
+        //    }
+        //}
+        //else
+        //{
+        //    if (!checkPushPullObject(out PushPullObject[] pushPullObjects))
+        //    { 
+        //        mbCheckPushPullObject = false;
+        //    }
+        //}
+
         if(checkPushPullObject(out PushPullObject[] pushPullObjects))
+        // if(mbCheckPushPullObject)
         {
             PushPullObject pushPullObject = pushPullObjects[0];
             mPushPullObject = pushPullObject;
             Bounds pushPullObjectBounds = pushPullObject.BoxCollider.bounds;
             Vector3 characterPos = transform.position;
 
-            float distanceToPPO = 0f;
-
-            if(characterPos.x < pushPullObjectBounds.min.x)
+            if (characterPos.y < pushPullObjectBounds.center.y)
             {
-                distanceToPPO = pushPullObjectBounds.min.x - characterPos.x;
+                float distanceToPPO = 0f;
 
-                characterPos.z = -((_pushPullRadius - distanceToPPO) / _pushPullRadius) *_pushPullZDistance;
-                transform.position = characterPos;
-            }
-            else if(characterPos.x > pushPullObjectBounds.max.x)
-            {
-                distanceToPPO = characterPos.x - pushPullObjectBounds.max.x;
+                // Pass by
+                if (characterPos.x < pushPullObjectBounds.min.x)
+                {
+                    distanceToPPO = pushPullObjectBounds.min.x - characterPos.x;
 
-                characterPos.z = -((_pushPullRadius - distanceToPPO) / _pushPullRadius) * _pushPullZDistance;
-                transform.position = characterPos;
+                    characterPos.z = -((_pushPullRadius - distanceToPPO) / _pushPullRadius) * _pushPullZDistance;
+                    transform.position = characterPos;
+                }
+                else if (characterPos.x > pushPullObjectBounds.max.x)
+                {
+                    distanceToPPO = characterPos.x - pushPullObjectBounds.max.x;
+
+                    characterPos.z = -((_pushPullRadius - distanceToPPO) / _pushPullRadius) * _pushPullZDistance;
+                    transform.position = characterPos;
+                }
+                else
+                {
+                    distanceToPPO = characterPos.z - pushPullObjectBounds.min.z;
+
+                    // PushPull
+                    if (distanceToPPO < _pushPullZDistance && mController.InputHandler.IsInteracting)
+                    {
+                        PlayerPushPullState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.PushPull) as PlayerPushPullState;
+                        pushPullState.SetPushPullObject(pushPullObjects[0]);
+                        mController.StateMachine.SwitchState(PlayerStateMachine.EState.PushPull);
+                    }
+                }
+
+                // Climb Object Up
+                if (mController.InputHandler.MoveInput.y > .1f)
+                {
+                    PlayerClimbObjectState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.ClimbObject) as PlayerClimbObjectState;
+                    pushPullState.SetClimbObject(pushPullObjects[0], climbUp : true);
+                    mController.StateMachine.SwitchState(PlayerStateMachine.EState.ClimbObject);
+                }
             }
             else
             {
-                distanceToPPO = characterPos.z - pushPullObjectBounds.min.z;
-
-                // PushPull
-                if (distanceToPPO < _pushPullZDistance && mController.InputHandler.IsInteracting)
+                // Climb Object Down
+                if(mController.InputHandler.MoveInput.y < -.1f)
                 {
-                    PlayerPushPullState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.PushPull) as PlayerPushPullState;
-                    pushPullState.SetPushPullObject(pushPullObjects[0]);
-                    mController.StateMachine.SwitchState(PlayerStateMachine.EState.PushPull);
+                    PlayerClimbObjectState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.ClimbObject) as PlayerClimbObjectState;
+                    pushPullState.SetClimbObject(pushPullObjects[0], climbUp: false);
+                    mController.StateMachine.SwitchState(PlayerStateMachine.EState.ClimbObject);
                 }
-            }
-
-            // Climb Object
-            if (mController.InputHandler.MoveInput.y > .1f)
-            {
-                PlayerClimbObjectState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.ClimbObject) as PlayerClimbObjectState;
-                pushPullState.SetClimbObject(pushPullObjects[0], climbUp : true);
-                mController.StateMachine.SwitchState(PlayerStateMachine.EState.ClimbObject);
-            }
-            else if(mController.InputHandler.MoveInput.y < -.1f)
-            {
-                PlayerClimbObjectState pushPullState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.ClimbObject) as PlayerClimbObjectState;
-                pushPullState.SetClimbObject(pushPullObjects[0], climbUp: false);
-                mController.StateMachine.SwitchState(PlayerStateMachine.EState.ClimbObject);
             }
         }
     }

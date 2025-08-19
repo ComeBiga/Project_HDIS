@@ -165,7 +165,14 @@ public class PlayerLadderState : PlayerStateBase
             // Start Climb Up 애니메이션 없이 시작하기 때문에 위치 즉시 설정
             // 자연스러움을 위해서는 Lerp 처리하던지 해야함
             Vector3 position = mController.Movement.Position;
-            position.x = mStepPositions[mCurrentStepIndex].x - _distanceToCharacter;
+            if(mLadderDirection == PlayerMovement.EDirection.Right)
+            {
+                position.x = mStepPositions[mCurrentStepIndex].x - _distanceToCharacter;
+            }
+            else
+            {
+                position.x = mStepPositions[mCurrentStepIndex].x + _distanceToCharacter;
+            }
             position.y = mStepPositions[mCurrentStepIndex].y;
             transform.position = position;
             // mController.Movement.SetPosition(mStepPositions[mCurrentStepIndex].x - _distanceToCharacter, mStepPositions[mCurrentStepIndex].y, position.z);
@@ -433,7 +440,14 @@ public class PlayerLadderState : PlayerStateBase
             // deltaPosition
             Vector3 deltaPosition = mController.Animator.Animator.deltaPosition;
             // 일정 위치까지 이동 시키기 위해서 일정 위치 전 까지는 deltaPosition을 배수 처리
-            deltaPosition.x *= (transform.position.x > mStepPositions[mCurrentStepIndex].x - _distanceToCharacter) ? _startClimbDownXSpeed : 0f;
+            if(mLadderDirection == PlayerMovement.EDirection.Right)
+            {
+                deltaPosition.x *= (transform.position.x > mStepPositions[mCurrentStepIndex].x - _distanceToCharacter) ? _startClimbDownXSpeed : 0f;
+            }
+            else
+            {
+                deltaPosition.x *= (transform.position.x < mStepPositions[mCurrentStepIndex].x + _distanceToCharacter) ? _startClimbDownXSpeed : 0f;
+            }
             if (animatorStateInfo.normalizedTime > .6f)
                 deltaPosition.y *= (transform.position.y > mStepPositions[mCurrentStepIndex].y) ? _startClimbDownYSpeed : 0f;
             deltaPosition.z = 0f;
