@@ -129,6 +129,7 @@ GameObject:
   - component: {fileID: 794937472454055995}
   - component: {fileID: 592085405196062304}
   - component: {fileID: 4025819839599777680}
+  - component: {fileID: 8686870357759620641}
   m_Layer: 0
   m_Name: Player_Prototype
   m_TagString: Untagged
@@ -269,6 +270,7 @@ MonoBehaviour:
   - {fileID: 794937472454055995}
   - {fileID: 592085405196062304}
   - {fileID: 4025819839599777680}
+  - {fileID: 8686870357759620641}
 --- !u!114 &2561486926390778882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -370,6 +372,19 @@ MonoBehaviour:
   _climbDownRotateSpeed: 3
   _climbDownYSpeed: 1.5
   _climbDownZSpeed: 1.8
+--- !u!114 &8686870357759620641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712958953486247521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 048a7b94c2d97304faf3655509bcd984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 6
 --- !u!1 &7065434943730406711
 GameObject:
   m_ObjectHideFlags: 0

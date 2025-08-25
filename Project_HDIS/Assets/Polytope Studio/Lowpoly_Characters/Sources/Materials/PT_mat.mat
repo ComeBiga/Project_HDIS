@@ -26,7 +26,7 @@ Material:
   - TransparentBackface
   - RayTracingPrepass
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _MaskMap
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -241,7 +241,7 @@ Material:
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
-    - _Smoothness: 0.35
+    - _Smoothness: 0.1
     - _SmoothnessRemapMax: 0.35
     - _SmoothnessRemapMin: 0
     - _SmoothnessTextureChannel: 0
