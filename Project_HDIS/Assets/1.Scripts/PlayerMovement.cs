@@ -176,6 +176,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void Tick()
     {
+        _animator.SetVelocityY(mRigidbody.velocity.y);
+
         // Check Ground
         checkGround();
     }
@@ -201,5 +203,7 @@ public class PlayerMovement : MonoBehaviour
 
             // _animator.SetIsGrounded(mbIsGrounded);
         }
+
+        _animator.SetIsGrounded(mbIsGrounded);
     }
 }

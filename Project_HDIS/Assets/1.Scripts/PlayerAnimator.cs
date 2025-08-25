@@ -17,7 +17,10 @@ public class PlayerAnimator : MonoBehaviour
     private readonly int InputXMagnitudeHash = Animator.StringToHash("InputXMagnitude");
     private readonly int InputYMagnitudeHash = Animator.StringToHash("InputYMagnitude");
     private readonly int JumpHash = Animator.StringToHash("Jump");
+    private readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private readonly int VelocityYHash = Animator.StringToHash("VelocityY");
     private readonly int LandingHash = Animator.StringToHash("Landing");
+    private readonly int HeavyLandingHash = Animator.StringToHash("HeavyLanding");
     private readonly int TurnLHash = Animator.StringToHash("TurnL");
     private readonly int TurnRHash = Animator.StringToHash("TurnR");
     private readonly int LadderTopHash = Animator.StringToHash("LadderTop");
@@ -49,6 +52,11 @@ public class PlayerAnimator : MonoBehaviour
         mAnimator.SetFloat(InputYMagnitudeHash, value);
     }
 
+    public void SetVelocityY(float value)
+    {
+        mAnimator.SetFloat(VelocityYHash, value);
+    }
+
     public void TurnL(bool value)
     {
         mAnimator.SetBool(TurnLHash, value);
@@ -59,6 +67,11 @@ public class PlayerAnimator : MonoBehaviour
         mAnimator.SetBool(TurnRHash, value);
     }
 
+    public void SetIsGrounded(bool value)
+    {
+        mAnimator.SetBool(IsGroundedHash, value);
+    }
+
     public void SetJump()
     {
         mAnimator.SetTrigger(JumpHash);
@@ -67,6 +80,16 @@ public class PlayerAnimator : MonoBehaviour
     public void SetLanding()
     {
         mAnimator.SetTrigger(LandingHash);
+    }
+
+    public void ResetLanding()
+    {
+        mAnimator.ResetTrigger(LandingHash);
+    }
+
+    public void SetHeavyLanding()
+    {
+        mAnimator.SetTrigger(HeavyLandingHash);
     }
 
     public void SetLadderTop(bool value)

@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerController))]
 public class PlayerStateMachine : MonoBehaviour
 {
-    public enum EState { Move, IdleJump, RunJump, Ladder, PushPull, ClimbObject }
+    public enum EState { Move, IdleJump, RunJump, Ladder, PushPull, ClimbObject, Fall }
 
     public EState CurrentState => mCurrentState;
     public PlayerStateBase CurrentStateBase => mCurrentStateBase;

@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerRunJumpState : PlayerStateBase
 {
     private Vector3 mMoveInput;
+    private float mDefaultHeight;
 
     public override void EnterState()
     {
@@ -16,7 +17,7 @@ public class PlayerRunJumpState : PlayerStateBase
 
     public override void ExitState()
     {
-        mController.Animator.SetLanding();
+        // mController.Animator.SetLanding();
     }
 
     public override void Tick()
@@ -38,10 +39,26 @@ public class PlayerRunJumpState : PlayerStateBase
         mController.Animator.SetHorizontal(mController.InputHandler.MoveInput.x);
         mController.Animator.SetInputXMagnitude(Mathf.Abs(mController.InputHandler.MoveInput.x));
 
+        mController.Movement.UpdateRotation();
+
         if (!mController.Movement.Jumping)
         {
             mController.StateMachine.SwitchState(PlayerStateMachine.EState.Move);
+            mController.Animator.SetLanding();
+
+            return;
         }
+
+        if(transform.position.y < mDefaultHeight - .1f)
+        {
+            mController.StateMachine.SwitchState(PlayerStateMachine.EState.Fall);
+            return;
+        }
+    }
+
+    public void SetDefaultHeight(float height)
+    {
+        mDefaultHeight = height;
     }
 }
 

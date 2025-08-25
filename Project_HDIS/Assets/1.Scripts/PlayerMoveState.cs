@@ -17,6 +17,7 @@ public class PlayerMoveState : PlayerStateBase
     [SerializeField] private float _pushPullZDistance;
     [SerializeField] private float _pushPullPassByZSpeed = 2f;
 
+    private float mDefaultHeight;
     private Vector3 mPreviousForward;       // 회전을 시작하면 어느 방향으로 도는지 체크해야되기 때문에 이전 방향을 저장
     private bool mbDirectionChanged = false;
     private bool mbRotating = false;        // 현재 사용되는 곳은 없지만 회전을 체크하는 변수이기 때문에 유지
@@ -26,6 +27,8 @@ public class PlayerMoveState : PlayerStateBase
 
     public override void EnterState()
     {
+        mDefaultHeight = transform.position.y;
+
         mPreviousForward = mController.Movement.Direction == PlayerMovement.EDirection.Left ?
                            Vector3.left : Vector3.right;
     }
@@ -104,6 +107,9 @@ public class PlayerMoveState : PlayerStateBase
             // 점프 입력이 됐을 때 이동 입력이 있으면 무조건 RunJump
             if (mController.InputHandler.MoveInput.x > .01f || mController.InputHandler.MoveInput.x < -.01f)
             {
+                PlayerRunJumpState runJumpState = mController.StateMachine.GetStateBase(PlayerStateMachine.EState.RunJump) as PlayerRunJumpState;
+                runJumpState.SetDefaultHeight(mDefaultHeight);
+
                 mController.StateMachine.SwitchState(PlayerStateMachine.EState.RunJump);
                 mController.InputHandler.ResetJump();
             }
@@ -112,6 +118,14 @@ public class PlayerMoveState : PlayerStateBase
                 mController.StateMachine.SwitchState(PlayerStateMachine.EState.IdleJump);
                 mController.InputHandler.ResetJump();
             }
+        }
+
+        // Fall
+        if(transform.position.y < mDefaultHeight - .1f)
+        {
+            mController.StateMachine.SwitchState(PlayerStateMachine.EState.Fall);
+
+            return;
         }
 
         // Ladder
